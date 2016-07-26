@@ -1,0 +1,15 @@
+{
+  "name": "toilet-training-tracker",
+  "version": "1.0.0",
+  "description": "An application to track toilet activity for someone in training.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "webpack"
+  ],
+  "author": "Dan Halverson <daniel.m.halverson@gmail.com> (http://halversondm.com/)",
+  "license": "MIT"
+}
