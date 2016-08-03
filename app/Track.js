@@ -12,7 +12,13 @@ const Track = React.createClass({
 
   getInitialState() {
     return {
-      startDate: moment()
+      startDate: moment(),
+      typeOfVisit: "",
+      duration: 0,
+      typeOfVoid: "",
+      scheduledVisit: "",
+      notes: "",
+      underwearCheckStatus: ""
     };
   },
 
@@ -22,8 +28,57 @@ const Track = React.createClass({
     });
   },
 
+  handleTypeOfVisit(event) {
+    this.setState({
+      typeOfVisit: event.target.value
+    });
+  },
+
+  handleTypeOfVoidClick(event) {
+    this.setState({
+      typeOfVoid: event.target.value
+    });
+  },
+
+  handleDurationChange(event) {
+    this.setState({
+      duration: event.target.value
+    });
+  },
+
+  handleTypeOfVoidChange(event) {
+    this.setState({
+      typeOfVoid: event.target.value
+    });
+  },
+
+  handleScheduledVisitChange(event) {
+    this.setState({
+      scheduledVisit: event.target.value
+    });
+  },
+
+  handleNotesChange(event) {
+    this.setState({
+      notes: event.target.value
+    });
+  },
+
+  save(event) {
+    event.preventDefault();
+    console.log(this.state); // would save state to store here.
+    this.setState({
+      startDate: moment(),
+      typeOfVisit: "",
+      duration: 0,
+      typeOfVoid: "",
+      scheduledVisit: "",
+      notes: "",
+      underwearCheckStatus: ""
+    });
+  },
+
   render() {
-    console.log(this.state.startDate);
     return <div><h4>Tracking</h4>
       <form className="form-horizontal">
         <div className="form-group">
@@ -39,52 +94,87 @@ const Track = React.createClass({
           <label htmlFor="typeOfVisit" className="col-sm-2 control-label">Type
             of Activity</label>
           <div className="col-sm-10">
-            <select id="typeOfVisit">
+            <select id="typeOfVisit" className="form-control"
+                    onChange={this.handleTypeOfVisit}
+                    value={this.state.typeOfVisit}>
               <option value=""/>
               <option value="Toilet Visit">Toilet Visit</option>
               <option value="Underwear Check">Underwear Check</option>
             </select>
           </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="duration" className="col-sm-2 control-label">Time
-            Duration of Toiled Visit</label>
-          <div className="col-sm-10">
-            <input type="number" className="form-control" id="duration"/>
+        <div hidden={this.state.typeOfVisit !== "Underwear Check"}>
+          <div className="form-group">
+            <label htmlFor="typeOfVoid" className="col-sm-2 control-label">Wet
+              or Dry?</label>
+            <div className="col-sm-10">
+              <select id="typeOfVoid" className="form-control"
+                      value={this.state.typeOfVoid}
+                      onChange={this.handleTypeOfVoidClick}>
+                <option value=""/>
+                <option value="Wet">Wet</option>
+                <option value="Dry">Dry</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div hidden={this.state.typeOfVisit !== "Toilet Visit"}>
+          <div className="form-group">
+            <label htmlFor="duration" className="col-sm-2 control-label">Time
+              Duration of Toilet Visit</label>
+            <div className="col-sm-10">
+              <div className="input-group">
+                <input type="number" className="form-control" id="duration"
+                       value={this.state.duration}
+                       onChange={this.handleDurationChange}/>
+                <div className="input-group-addon">minute(s)</div>
+              </div>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="typeOfVoid" className="col-sm-2 control-label">Type
+              of
+              Void</label>
+            <div className="col-sm-10">
+              <select id="typeOfVoid" className="form-control"
+                      value={this.state.typeOfVoid}
+                      onChange={this.handleTypeOfVoidChange}>
+                <option value=""/>
+                <option value="Urine">Urine</option>
+                <option value="Bowel Movement">Bowel Movement</option>
+                <option value="Both">Both</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="scheduled" className="col-sm-2 control-label">Scheduled
+              Visit?</label>
+            <div className="col-sm-10">
+              <select id="schedule" className="form-control"
+                      value={this.state.scheduledVisit}
+                      onChange={this.handleScheduledVisitChange}>
+                <option value=""/>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="typeOfVoid" className="col-sm-2 control-label">Type of
-            Void</label>
-          <div className="col-sm-10">
-            <select id="typeOfVoid">
-              <option value=""/>
-              <option value="Urine">Urine</option>
-              <option value="Bowel Movement">Bowel Movement</option>
-              <option value="Both">Both</option>
-            </select>
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="scheduled" className="col-sm-2 control-label">Scheduled
-            Visit?</label>
-          <div className="col-sm-10">
-            <select id="schedule">
-              <option value=""/>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="hotes"
+          <label htmlFor="notes"
                  className="col-sm-2 control-label">Notes</label>
           <div className="col-sm-10">
-            <textarea className="form-control" id="notes"/>
+            <textarea className="form-control" id="notes"
+                      value={this.state.notes}
+                      onChange={this.handleNotesChange}/>
           </div>
         </div>
         <div className="form-group">
-          <button className="btn btn-md btn-success">Save</button>
+          <div className="col-sm-offset-2 col-sm-10">
+            <button className="btn btn-md btn-success" onClick={this.save}>
+              Save
+            </button>
+          </div>
         </div>
       </form>
     </div>;
