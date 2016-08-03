@@ -4,7 +4,14 @@
   "description": "An application to track toilet activity for someone in training.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist",
+    "startProd": "cross-env NODE_ENV=production babel-node server",
+    "prestartHot": "npm run eslint",
+    "startHot": "cross-env NODE_ENV=development babel-node server",
+    "prebuild": "npm run clean && npm run eslint",
+    "eslint": "eslint app/**/**.js --fix",
+    "build": "cross-env NODE_ENV=production webpack --config ./webpack.config.js --progress --profile --colors"
   },
   "keywords": [
     "react",
@@ -13,10 +20,15 @@
   "author": "Dan Halverson <daniel.m.halverson@gmail.com> (http://halversondm.com/)",
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "3.3.7",
+    "moment": "2.14.1",
     "react": "15.2.1",
     "react-bootstrap": "0.29.5",
+    "react-date-picker": "5.3.26",
     "react-dom": "15.2.1",
-    "react-router": "2.5.1"
+    "react-redux": "4.4.5",
+    "react-router": "2.5.1",
+    "redux": "3.5.2"
   },
   "devDependencies": {
     "babel-cli": "6.6.5",
@@ -39,6 +51,7 @@
     "morgan": "1.7.0",
     "react-transform-catch-errors": "1.0.2",
     "react-transform-hmr": "1.0.2",
+    "redux-devtools": "3.3.1",
     "rimraf": "2.4.3",
     "style-loader": "0.13.1",
     "webpack": "1.12.14",

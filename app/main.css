@@ -1,0 +1,11 @@
+.navbar-icons {
+    float: right;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.navbar-icons > a > i {
+    padding-right: 10px;
+}

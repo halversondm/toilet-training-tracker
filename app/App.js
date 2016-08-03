@@ -13,30 +13,21 @@ const App = React.createClass({
 
   render() {
     return (
-      <div>
-        <div className="header">
-          <div className="navbar navbar-default navbar-fixed-top" role="navigation">
-            <div className="container">
-              <div className="navbar-header">
-                <button type="button" className="navbar-toggle collapsed"
-                        data-toggle="collapse"
-                        data-target="#js-navbar-collapse">
-                  <span className="sr-only">Toggle navigation</span>
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                  <span className="icon-bar" />
-                </button>
-                <div className="navbar-brand">Toilet Training Tracker</div>
-              </div>
-              <div className="collapse navbar-collapse" id="js-navbar-collapse">
-                <ul className="nav navbar-nav">
-                  <li><Link to="/track">Track</Link></li>
-                  <li><Link to="/config">Configure</Link></li>
-                </ul>
-              </div>
+      <div className="container">
+        <nav className="navbar navbar-default"
+             role="navigation">
+          <div>
+            <div className="navbar-brand">Toilet Training Tracker</div>
+            <div className="navbar-icons">
+              <Link to="/configure">
+                <i className="fa fa-cog fa-lg"/>
+              </Link>
+              <Link to="/track">
+                <i className="fa fa-recycle fa-lg"/>
+              </Link>
             </div>
           </div>
-        </div>
+        </nav>
         <div className="theme-showcase container">
           {this.props.children}
           <hr />
@@ -44,7 +35,8 @@ const App = React.createClass({
             <p>&copy; 2016 halversondm.com</p>
           </footer>
         </div>
-      </div>);
+      </div>
+    );
   }
 });
 

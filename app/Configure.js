@@ -7,7 +7,7 @@ import React from "react";
 
 const Configure = React.createClass({
   render() {
-    return <div></div>;
+    return <div>Configure</div>;
   }
 });
 
