@@ -12,19 +12,19 @@ const Track = React.createClass({
 
   getInitialState() {
     return {
-      startDate: moment(),
+      date: moment(),
       typeOfVisit: "",
       duration: 0,
       typeOfVoid: "",
-      scheduledVisit: "",
+      promptedVisit: "",
       notes: "",
       underwearCheckStatus: ""
     };
   },
 
-  handleDatePickerChange(date) {
+  handleDateChange(date) {
     this.setState({
-      startDate: date
+      date: date
     });
   },
 
@@ -52,9 +52,9 @@ const Track = React.createClass({
     });
   },
 
-  handleScheduledVisitChange(event) {
+  handlePromptedVisitChange(event) {
     this.setState({
-      scheduledVisit: event.target.value
+      promptedVisit: event.target.value
     });
   },
 
@@ -66,13 +66,14 @@ const Track = React.createClass({
 
   save(event) {
     event.preventDefault();
-    console.log(this.state); // would save state to store here.
+    console.log(this.state);
+    // would save state to store here.
     this.setState({
-      startDate: moment(),
+      date: moment(),
       typeOfVisit: "",
       duration: 0,
       typeOfVoid: "",
-      scheduledVisit: "",
+      promptedVisit: "",
       notes: "",
       underwearCheckStatus: ""
     });
@@ -82,12 +83,12 @@ const Track = React.createClass({
     return <div><h4>Tracking</h4>
       <form className="form-horizontal">
         <div className="form-group">
-          <label htmlFor="when" className="col-sm-2 control-label">When</label>
+          <label htmlFor="date" className="col-sm-2 control-label">Date</label>
           <div className="col-sm-10">
             <DateField id="date" forceValidDate
-                       dateFormat="MM/DD/YYYY hh:mm a"
-                       defaultValue={this.state.startDate}
-                       onChange={this.handleDatePickerChange}/>
+                       dateFormat="MM/DD/YYYY"
+                       defaultValue={this.state.date}
+                       onChange={this.handleDateChange}/>
           </div>
         </div>
         <div className="form-group">
@@ -147,12 +148,11 @@ const Track = React.createClass({
             </div>
           </div>
           <div className="form-group">
-            <label htmlFor="scheduled" className="col-sm-2 control-label">Scheduled
-              Visit?</label>
+            <label htmlFor="prompted" className="col-sm-2 control-label">Prompted Visit?</label>
             <div className="col-sm-10">
-              <select id="schedule" className="form-control"
-                      value={this.state.scheduledVisit}
-                      onChange={this.handleScheduledVisitChange}>
+              <select id="prompted" className="form-control"
+                      value={this.state.promptedVisit}
+                      onChange={this.handlePromptedVisitChange}>
                 <option value=""/>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>

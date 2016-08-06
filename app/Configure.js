@@ -4,16 +4,21 @@
 "use strict";
 
 import React from "react";
+import {connect} from "react-redux";
 
 const Configure = React.createClass({
 
+  propTypes: {
+    data: React.PropTypes.object
+  },
+
   getInitialState() {
-    return {
-      intervalBetweenDryCheck: 0,
-      intervalBetweenToiletVisit: 0,
-      traineeDurationOnToilet: 0,
-      rewardForVoiding: ""
-    };
+    return this.props.data;
+  },
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    this.setState(nextProps.data);
   },
 
   handleDryCheckChange(event) {
@@ -50,7 +55,8 @@ const Configure = React.createClass({
       <h4>Configure</h4>
       <form className="form-horizontal">
         <div className="form-group">
-          <label htmlFor="dryCheck" className="col-sm-2 control-label">Interval Between Dry Checks</label>
+          <label htmlFor="dryCheck" className="col-sm-2 control-label">Interval
+            Between Dry Checks</label>
           <div className="col-sm-10">
             <div className="input-group">
               <input type="number" className="form-control" id="dryCheck"
@@ -61,7 +67,8 @@ const Configure = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="toiletVisit" className="col-sm-2 control-label">Interval Between Toilet Visits</label>
+          <label htmlFor="toiletVisit" className="col-sm-2 control-label">Interval
+            Between Toilet Visits</label>
           <div className="col-sm-10">
             <div className="input-group">
               <input type="number" className="form-control" id="toiletVisit"
@@ -72,7 +79,8 @@ const Configure = React.createClass({
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="traineeDuration" className="col-sm-2 control-label">Trainee Duration on Toilet</label>
+          <label htmlFor="traineeDuration" className="col-sm-2 control-label">Trainee
+            Duration on Toilet</label>
           <div className="col-sm-10">
             <div className="input-group">
               <input type="number" className="form-control" id="traineeDuration"
@@ -103,4 +111,10 @@ const Configure = React.createClass({
   }
 });
 
-export default Configure;
+function select(state) {
+  return {
+    data: state.config
+  };
+}
+
+export default connect(select)(Configure);

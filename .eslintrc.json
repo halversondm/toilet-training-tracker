@@ -67,7 +67,6 @@
     "eol-last": "error",
     "eqeqeq": "error",
     "func-names": "off",
-    "func-style": "error",
     "generator-star-spacing": "error",
     "global-require": "error",
     "guard-for-in": "off",
@@ -217,7 +216,6 @@
     ],
     "radix": "error",
     "react/no-danger": "warn",
-    "require-jsdoc": "error",
     "require-yield": "error",
     "semi": "error",
     "semi-spacing": [

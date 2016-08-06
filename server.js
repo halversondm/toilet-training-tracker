@@ -43,7 +43,22 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
 
-app.listen(port, "localhost", (err) => {
+app.post("/login", (req, res) => {
+  var loginInfo = req.body;
+  console.log(loginInfo);
+  if (loginInfo.email === "a@a.com") {
+    res.send({
+      intervalBetweenDryCheck: 30,
+      intervalBetweenToiletVisit: 60,
+      traineeDurationOnToilet: 7,
+      rewardForVoiding: "Ice cream"
+    });
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.listen(port, "0.0.0.0", (err) => {
   if (err) {
     console.log(err);
   }
