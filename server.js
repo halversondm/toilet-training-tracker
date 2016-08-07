@@ -83,8 +83,9 @@ app.post("/loginService", (req, res) => {
 
 app.post("/saveTrack", (req, res) => {
     var track = req.body;
+    console.log(track);
     var params = {
-        TableName: "Profile",
+        TableName: "Track",
         Item: track
     };
 
