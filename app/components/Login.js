@@ -6,7 +6,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
-import {updateForm, authenticated, notAuthenticated, setConfig} from "./actions";
+import {updateForm, authenticated, notAuthenticated, setConfig} from "../actions";
 
 const Login = withRouter(React.createClass({
 

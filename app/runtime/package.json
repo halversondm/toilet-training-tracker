@@ -1,0 +1,28 @@
+{
+  "name": "toilet-training-tracker",
+  "version": "1.0.0",
+  "description": "An application to track toilet activity for someone in training.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halversondm/toilet-training-tracker.git"
+  },
+  "keywords": [
+    "express",
+    "webpack",
+    "node"
+  ],
+  "author": "Dan Halverson",
+  "license": "MIT",
+  "homepage": "https://github.com/halversondm/toilet-training-tracker.git",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node server"
+  },
+  "dependencies": {
+    "cross-env": "1.0.8",
+    "express": "4.13.3",
+    "body-parser": "1.15.2",
+    "morgan": "1.7.0",
+    "aws-sdk": "2.4.13"
+  }
+}

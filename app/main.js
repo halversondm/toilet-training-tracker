@@ -4,10 +4,10 @@
 "use strict";
 import React from "react";
 import {render} from "react-dom";
-import App from "./App";
-import Track from "./Track";
-import Login from "./Login";
-import Configure from "./Configure";
+import App from "./components/App";
+import Track from "./components/Track";
+import Login from "./components/Login";
+import Configure from "./components/Configure";
 import {Provider} from "react-redux";
 import {createStore} from "redux";
 import trackerStore from "./reducers";
