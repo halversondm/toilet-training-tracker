@@ -7,60 +7,101 @@ import webpackHotMiddleware from "webpack-hot-middleware";
 import config from "./webpack.config.js";
 import morgan from "morgan";
 import bodyParser from "body-parser";
+import AWS from "aws-sdk";
+import historyApiFallback from "connect-history-api-fallback";
 
 const isDeveloping = process.env.NODE_ENV !== "production";
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 const app = express();
 
+AWS.config.update({
+    region: "us-west-2",
+    endpoint: "http://localhost:8000"
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan("dev"));
 
 if (isDeveloping) {
-  console.log("Running the 'hot' version of the code");
-  const compiler = webpack(config);
+    console.log("Running the 'hot' version of the code");
+    const compiler = webpack(config);
+    app.use(historyApiFallback({verbose: false}));
+    app.use(webpackMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+        contentBase: "app",
+        hot: true,
+        quiet: false,
+        noInfo: false,
+        lazy: false,
+        stats: {
+            colors: true,
+            hash: false,
+            timings: true,
+            chunks: false,
+            chunkModules: false,
+            modules: false
+        }
+    }));
 
-  app.use(webpackMiddleware(compiler, {
-    publicPath: config.output.publicPath,
-    contentBase: "src",
-    stats: {
-      colors: true,
-      hash: false,
-      timings: true,
-      chunks: false,
-      chunkModules: false,
-      modules: false
-    }
-  }));
-
-  app.use(webpackHotMiddleware(compiler));
+    app.use(webpackHotMiddleware(compiler));
 } else {
-  console.log("Running the 'production' version of the code");
-  app.use(express.static(__dirname + "/dist"));
+    console.log("Running the 'production' version of the code");
+    app.use(express.static(__dirname + "/dist"));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+    });
 }
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+app.post("/loginService", (req, res) => {
+    var loginInfo = req.body;
+    console.log(loginInfo);
+    var params = {
+        TableName: "Profile",
+        Key: {
+            "emailAddress": loginInfo.email
+        }
+    };
+
+    docClient.get(params, function (err, data) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(404);
+        } else {
+            console.log(data);
+            if (data.Item.key === loginInfo.key) {
+                res.send({config: data.Item.config, profileId: data.Item.profileId});
+            } else {
+                res.sendStatus(404);
+            }
+        }
+    });
 });
 
-app.post("/login", (req, res) => {
-  var loginInfo = req.body;
-  console.log(loginInfo);
-  if (loginInfo.email === "a@a.com") {
-    res.send({
-      intervalBetweenDryCheck: 30,
-      intervalBetweenToiletVisit: 60,
-      traineeDurationOnToilet: 7,
-      rewardForVoiding: "Ice cream"
+app.post("/saveTrack", (req, res) => {
+    var track = req.body;
+    var params = {
+        TableName: "Profile",
+        Item: track
+    };
+
+    docClient.put(params, function (err, data) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        } else {
+            console.log(data);
+            res.sendStatus(200);
+        }
     });
-  } else {
-    res.sendStatus(404);
-  }
 });
 
 app.listen(port, "0.0.0.0", (err) => {
-  if (err) {
-    console.log(err);
-  }
-  console.info("==> Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port);
+    if (err) {
+        console.log(err);
+    }
+    console.info("==> Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port);
 });

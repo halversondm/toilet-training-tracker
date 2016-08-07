@@ -25,9 +25,10 @@ export const notAuthenticated = () => {
   };
 };
 
-export const setConfig = config => {
+export const setConfig = (config, profileId) => {
   return {
     type: "SET_CONFIG",
-    config: config
+    config: config,
+    profileId: profileId
   };
 };

@@ -82,10 +82,6 @@
     ],
     "key-spacing": "error",
     "keyword-spacing": "error",
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
     "lines-around-comment": "error",
     "max-depth": "error",
     "max-len": [

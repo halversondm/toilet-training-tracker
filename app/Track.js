@@ -6,9 +6,14 @@
 import React from "react";
 import {DateField} from "react-date-picker";
 import moment from "moment";
+import {connect} from "react-redux";
 import "react-date-picker/index.css";
 
 const Track = React.createClass({
+
+  propTypes: {
+    profileId: React.PropTypes.number
+  },
 
   getInitialState() {
     return {
@@ -66,17 +71,24 @@ const Track = React.createClass({
 
   save(event) {
     event.preventDefault();
-    console.log(this.state);
-    // would save state to store here.
-    this.setState({
-      date: moment(),
-      typeOfVisit: "",
-      duration: 0,
-      typeOfVoid: "",
-      promptedVisit: "",
-      notes: "",
-      underwearCheckStatus: ""
-    });
+    var dataToSend = Object.assign({}, this.state, {profileId: this.props.profileId});
+    var data = JSON.stringify(dataToSend);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/saveTrack");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 400) {
+        const response = JSON.parse(xhr.responseText);
+        console.log("succ ", response);
+        this.setState(this.getInitialState());
+      } else {
+        console.log("unsucc ", xhr.responseText);
+      }
+    };
+    xhr.onerror = () => {
+      console.log(xhr);
+    };
+    xhr.send(data);
   },
 
   render() {
@@ -181,4 +193,10 @@ const Track = React.createClass({
   }
 });
 
-export default Track;
+function select(state) {
+  return {
+    profileId: state.profileId
+  };
+}
+
+export default connect(select)(Track);

@@ -14,27 +14,26 @@ import trackerStore from "./reducers";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap-theme.css";
 import "./main.css";
-
-import {Router, Route, hashHistory, IndexRoute} from "react-router";
+import {Router, Route, browserHistory} from "react-router";
 
 let store = createStore(trackerStore);
 
-function checkAuth(nextState, replaceState) {
-  const {authenticated} = store.getState();
-
-  if (!authenticated) {
-    replaceState(null, "/login");
-  }
+function checkAuth(nextState, replace) {
+    const {authenticated} = store.getState();
+    if (!authenticated) {
+        replace({pathname: "/login", state: {nextPathname: nextState.location.pathname}});
+    }
 }
 
 render(
-  <Provider store={store}>
-    <Router history={hashHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Login}/>
-        <Route path="/login" component={Login}/>
-        <Route path="/track" component={Track} onEnter={checkAuth}/>
-        <Route path="/configure" component={Configure} onEnter={checkAuth}/>
-      </Route>
-    </Router>
-  </Provider>, document.getElementById("root"));
+    <Provider store={store}>
+        <Router history={browserHistory}>
+            <Route path="/" component={App}>
+                <Route path="login" component={Login}/>
+                <Route onEnter={checkAuth}>
+                    <Route path="track" component={Track}/>
+                    <Route path="configure" component={Configure}/>
+                </Route>
+            </Route>
+        </Router>
+    </Provider>, document.getElementById("root"));

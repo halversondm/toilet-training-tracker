@@ -36,7 +36,7 @@ const App = React.createClass({
           </div>
         </nav>
         <div className="theme-showcase container">
-          {this.props.children}
+          {this.props.children || <Link to="login" >Please login.</Link>}
           <hr />
           <footer>
             <p>&copy; 2016 halversondm.com</p>

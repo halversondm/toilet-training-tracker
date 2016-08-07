@@ -14,7 +14,8 @@ const initialState = {
     intervalBetweenToiletVisit: 0,
     traineeDurationOnToilet: 0,
     rewardForVoiding: ""
-  }
+  },
+  profileId: 0
 };
 
 const trackerState = (state = initialState, action) => {
@@ -26,7 +27,7 @@ const trackerState = (state = initialState, action) => {
     case "NOT_AUTHENTICATED":
       return Object.assign({}, state, {authenticated: false});
     case "SET_CONFIG":
-      return Object.assign({}, state, {config: action.config});
+      return Object.assign({}, state, {config: action.config, profileId: action.profileId});
     default:
       return state;
   }
