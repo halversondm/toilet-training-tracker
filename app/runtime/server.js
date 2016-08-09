@@ -11,8 +11,8 @@ var port = 8080;
 var app = express();
 
 AWS.config.update({
-  region: "us-west-2",
-  endpoint: "http://localhost:8000"
+  region: "us-east-1",
+  endpoint: "https://dynamodb.us-east-1.amazonaws.com"
 });
 
 var docClient = new AWS.DynamoDB.DocumentClient();
@@ -24,6 +24,14 @@ app.use(express.static(__dirname));
 app.get("*", function response(req, res) {
   res.sendFile(path.join(__dirname, "index.html"));
 });
+
+const deleteEmptyKeys = object => {
+  Object.keys(object).forEach(key => {
+    if (object[key] === "") {
+      delete object[key];
+    }
+  });
+};
 
 app.post("/loginService", (req, res) => {
   var loginInfo = req.body;
@@ -52,6 +60,7 @@ app.post("/loginService", (req, res) => {
 
 app.post("/saveTrack", (req, res) => {
   var track = req.body;
+  deleteEmptyKeys(track);
   console.log(track);
   var params = {
     TableName: "Track",
@@ -59,6 +68,35 @@ app.post("/saveTrack", (req, res) => {
   };
 
   docClient.put(params, function (err, data) {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } else {
+      console.log(data);
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.post("/saveConfig", (req, res) => {
+  var configuration = req.body;
+  console.log(configuration);
+  var updateExpress = `set config.intervalBetweenToiletVisit = :a, 
+  config.rewardForVoiding = :b, config.intervalBetweenDryCheck = :c, config.traineeDurationOnToilet = :d`;
+  var params = {
+    TableName: "Profile",
+    Key: {"emailAddress": configuration.emailAddress},
+    UpdateExpression: updateExpress,
+    ExpressionAttributeValues: {
+      ":a": configuration.config.intervalBetweenToiletVisit,
+      ":b": configuration.config.rewardForVoiding,
+      ":c": configuration.config.intervalBetweenDryCheck,
+      ":d": configuration.config.traineeDurationOnToilet
+    },
+    Item: configuration
+  };
+
+  docClient.update(params, function (err, data) {
     if (err) {
       console.log(err);
       res.sendStatus(500);

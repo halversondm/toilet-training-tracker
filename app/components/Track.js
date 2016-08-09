@@ -71,11 +71,6 @@ const Track = React.createClass({
     save(event) {
         event.preventDefault();
         var currentState = this.state;
-        Object.keys(currentState).forEach(key => {
-            if (currentState[key] === "") {
-                delete currentState[key];
-            }
-        });
         var dataToSend = Object.assign({}, currentState, {profileId: this.props.profileId});
         var data = JSON.stringify(dataToSend);
         var xhr = new XMLHttpRequest();
