@@ -2,12 +2,14 @@
 Main production server configuration using NodeJS and ExpressJS
  */
 "use strict";
+console.log("halversondm toilettracker site");
+
 var AWS = require("aws-sdk");
 var path = require("path");
 var express = require("express");
 var bodyParser = require("body-parser");
 var morgan = require("morgan");
-var port = 8080;
+var port = 3001;
 var app = express();
 
 AWS.config.update({
@@ -49,10 +51,14 @@ app.post("/loginService", (req, res) => {
       res.sendStatus(404);
     } else {
       console.log(data);
-      if (data.Item.key === loginInfo.key) {
-        res.send({config: data.Item.config, profileId: data.Item.profileId});
+      if (data.hasOwnProperty("Item")) {
+          if (data.Item.key === loginInfo.key) {
+              res.send({config: data.Item.config, profileId: data.Item.profileId});
+          } else {
+              res.sendStatus(404);
+          }
       } else {
-        res.sendStatus(404);
+          res.sendStatus(404);
       }
     }
   });

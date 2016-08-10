@@ -80,8 +80,12 @@ app.post("/loginService", (req, res) => {
             res.sendStatus(404);
         } else {
             console.log(data);
-            if (data.Item.key === loginInfo.key) {
-                res.send({config: data.Item.config, profileId: data.Item.profileId});
+            if (data.hasOwnProperty("Item")) {
+                if (data.Item.key === loginInfo.key) {
+                    res.send({config: data.Item.config, profileId: data.Item.profileId});
+                } else {
+                    res.sendStatus(404);
+                }
             } else {
                 res.sendStatus(404);
             }
