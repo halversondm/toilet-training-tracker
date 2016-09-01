@@ -3,19 +3,22 @@
  */
 "use strict";
 
-import React from "react";
+import React, {Component} from "react";
 import {DateField} from "react-date-picker";
 import moment from "moment";
 import {connect} from "react-redux";
 import "react-date-picker/index.css";
 
-const Track = React.createClass({
+class Track extends Component {
 
-    propTypes: {
-        profileId: React.PropTypes.number
-    },
+    constructor(props) {
+        super(props);
+        this.initialState = this.initialState.bind(this);
+        this.state = this.initialState();
+        this.save = this.save.bind(this);
+    }
 
-    getInitialState() {
+    initialState() {
         return {
             date: moment(),
             typeOfActivity: "",
@@ -24,49 +27,7 @@ const Track = React.createClass({
             promptedVisit: "",
             notes: ""
         };
-    },
-
-    handleDateChange(date) {
-        this.setState({
-            date: date
-        });
-    },
-
-    handleTypeOfActivity(event) {
-        this.setState({
-            typeOfActivity: event.target.value
-        });
-    },
-
-    handleTypeOfVoidClick(event) {
-        this.setState({
-            typeOfVoid: event.target.value
-        });
-    },
-
-    handleDurationChange(event) {
-        this.setState({
-            duration: event.target.value
-        });
-    },
-
-    handleTypeOfVoidChange(event) {
-        this.setState({
-            typeOfVoid: event.target.value
-        });
-    },
-
-    handlePromptedVisitChange(event) {
-        this.setState({
-            promptedVisit: event.target.value
-        });
-    },
-
-    handleNotesChange(event) {
-        this.setState({
-            notes: event.target.value
-        });
-    },
+    }
 
     save(event) {
         event.preventDefault();
@@ -78,7 +39,7 @@ const Track = React.createClass({
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
-                this.setState(this.getInitialState());
+                this.setState(this.initialState());
             } else {
                 console.log("unsucc ", xhr.responseText);
             }
@@ -87,7 +48,7 @@ const Track = React.createClass({
             console.log(xhr);
         };
         xhr.send(data);
-    },
+    }
 
     render() {
         return <div><h4>Tracking</h4>
@@ -98,7 +59,9 @@ const Track = React.createClass({
                         <DateField id="date" forceValidDate
                                    dateFormat="MM/DD/YYYY hh:mm a"
                                    defaultValue={this.state.date}
-                                   onChange={this.handleDateChange}/>
+                                   onChange={date => {
+                                       this.setState({date: date});
+                                   }}/>
                     </div>
                 </div>
                 <div className="form-group">
@@ -106,7 +69,9 @@ const Track = React.createClass({
                         of Activity</label>
                     <div className="col-sm-10">
                         <select id="typeOfActivity" className="form-control"
-                                onChange={this.handleTypeOfActivity}
+                                onChange={event => {
+                                    this.setState({typeOfActivity: event.target.value});
+                                }}
                                 value={this.state.typeOfActivity}>
                             <option value=""/>
                             <option value="Toilet Visit">Toilet Visit</option>
@@ -121,7 +86,11 @@ const Track = React.createClass({
                         <div className="col-sm-10">
                             <select id="typeOfVoid" className="form-control"
                                     value={this.state.typeOfVoid}
-                                    onChange={this.handleTypeOfVoidClick}>
+                                    onChange={event => {
+                                        this.setState({
+                                            typeOfVoid: event.target.value
+                                        });
+                                    }}>
                                 <option value=""/>
                                 <option value="Wet">Wet</option>
                                 <option value="Dry">Dry</option>
@@ -137,7 +106,11 @@ const Track = React.createClass({
                             <div className="input-group">
                                 <input type="number" className="form-control" id="duration"
                                        value={this.state.duration}
-                                       onChange={this.handleDurationChange}/>
+                                       onChange={event => {
+                                           this.setState({
+                                               duration: event.target.value
+                                           });
+                                       }}/>
                                 <div className="input-group-addon">minute(s)</div>
                             </div>
                         </div>
@@ -149,11 +122,16 @@ const Track = React.createClass({
                         <div className="col-sm-10">
                             <select id="typeOfVoid" className="form-control"
                                     value={this.state.typeOfVoid}
-                                    onChange={this.handleTypeOfVoidChange}>
+                                    onChange={event => {
+                                        this.setState({
+                                            typeOfVoid: event.target.value
+                                        });
+                                    }}>
                                 <option value=""/>
                                 <option value="Urine">Urine</option>
                                 <option value="Bowel Movement">Bowel Movement</option>
                                 <option value="Both">Both</option>
+                                <option value="None">None</option>
                             </select>
                         </div>
                     </div>
@@ -162,7 +140,11 @@ const Track = React.createClass({
                         <div className="col-sm-10">
                             <select id="prompted" className="form-control"
                                     value={this.state.promptedVisit}
-                                    onChange={this.handlePromptedVisitChange}>
+                                    onChange={event => {
+                                        this.setState({
+                                            promptedVisit: event.target.value
+                                        });
+                                    } }>
                                 <option value=""/>
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
@@ -176,7 +158,11 @@ const Track = React.createClass({
                     <div className="col-sm-10">
             <textarea className="form-control" id="notes"
                       value={this.state.notes}
-                      onChange={this.handleNotesChange}/>
+                      onChange={event => {
+                          this.setState({
+                              notes: event.target.value
+                          });
+                      }}/>
                     </div>
                 </div>
                 <div className="form-group">
@@ -189,7 +175,11 @@ const Track = React.createClass({
             </form>
         </div>;
     }
-});
+}
+
+Track.propTypes = {
+    profileId: React.PropTypes.number
+};
 
 function select(state) {
     return {

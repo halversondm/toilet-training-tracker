@@ -3,47 +3,49 @@
  */
 "use strict";
 
-import React from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
 
-const Configure = React.createClass({
+class Configure extends Component {
 
-    propTypes: {
-        data: React.PropTypes.object
-    },
-
-    getInitialState() {
-        return this.props.data;
-    },
+    constructor(props) {
+        super(props);
+        this.state = this.props.data;
+        this.handleDryCheckChange = this.handleDryCheckChange.bind(this);
+        this.handleToiletVisitChange = this.handleToiletVisitChange.bind(this);
+        this.handleRewardChange = this.handleRewardChange.bind(this);
+        this.handleTraineeDurationChange = this.handleTraineeDurationChange.bind(this);
+        this.save = this.save.bind(this);
+    }
 
     componentWillReceiveProps(nextProps) {
         console.log(nextProps);
         this.setState(nextProps.data);
-    },
+    }
 
     handleDryCheckChange(event) {
         var config = this.state.config;
         config.intervalBetweenDryCheck = event.target.value;
         this.setState({config: config});
-    },
+    }
 
     handleToiletVisitChange(event) {
         var config = this.state.config;
         config.intervalBetweenToiletVisit = event.target.value;
         this.setState({config: config});
-    },
+    }
 
     handleTraineeDurationChange(event) {
         var config = this.state.config;
         config.traineeDurationOnToilet = event.target.value;
         this.setState({config: config});
-    },
+    }
 
     handleRewardChange(event) {
         var config = this.state.config;
         config.rewardForVoiding = event.target.value;
         this.setState({config: config});
-    },
+    }
 
     save(event) {
         event.preventDefault();
@@ -64,7 +66,7 @@ const Configure = React.createClass({
             console.log(xhr);
         };
         xhr.send(data);
-    },
+    }
 
     render() {
         return <div>
@@ -125,7 +127,11 @@ const Configure = React.createClass({
             </form>
         </div>;
     }
-});
+}
+
+Configure.propTypes = {
+    data: React.PropTypes.object
+};
 
 function select(state) {
     return {

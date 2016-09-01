@@ -3,38 +3,21 @@
  */
 "use strict";
 
-import React from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
 import {updateForm, authenticated, notAuthenticated, setConfig} from "../actions";
 
-const Login = withRouter(React.createClass({
+class Login extends Component {
 
-    propTypes: {
-        dispatch: React.PropTypes.func,
-        router: React.PropTypes.object
-    },
-
-    getInitialState() {
-        return {
+    constructor(props) {
+        super(props);
+        this.state = {
             email: "",
             key: ""
         };
-    },
-
-    handleEmailChange(event) {
-        this.setState({
-            email: event.target.value,
-            error: false
-        });
-    },
-
-    handlePasswordChange(event) {
-        this.setState({
-            key: event.target.value,
-            error: false
-        });
-    },
+        this.login = this.login.bind(this);
+    }
 
     login(event) {
         event.preventDefault();
@@ -59,7 +42,7 @@ const Login = withRouter(React.createClass({
             console.log(xhr);
         };
         xhr.send(data);
-    },
+    }
 
     render() {
         return <div>
@@ -77,7 +60,12 @@ const Login = withRouter(React.createClass({
                     <div className="col-sm-10">
                         <input type="email" className="form-control" id="email"
                                value={this.state.email}
-                               onChange={this.handleEmailChange}/>
+                               onChange={event => {
+                                   this.setState({
+                                       email: event.target.value,
+                                       error: false
+                                   });
+                               }}/>
                     </div>
                 </div>
                 <div className="form-group">
@@ -86,7 +74,12 @@ const Login = withRouter(React.createClass({
                     <div className="col-sm-10">
                         <input type="password" className="form-control" id="password"
                                value={this.state.key}
-                               onChange={this.handlePasswordChange}/>
+                               onChange={event => {
+                                   this.setState({
+                                       key: event.target.value,
+                                       error: false
+                                   });
+                               }}/>
                     </div>
                 </div>
                 <div className="form-group">
@@ -99,7 +92,12 @@ const Login = withRouter(React.createClass({
             </form>
         </div>;
     }
-}));
+}
+
+Login.propTypes = {
+    dispatch: React.PropTypes.func,
+    router: React.PropTypes.object
+};
 
 function select(state) {
     return {
@@ -107,4 +105,4 @@ function select(state) {
     };
 }
 
-export default connect(select)(Login);
+export default connect(select)(withRouter(Login));

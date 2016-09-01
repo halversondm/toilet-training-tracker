@@ -17,7 +17,6 @@ var config = {
         new HtmlWebpackPlugin({
             template: "app/index.tpl.html",
             inject: "body",
-            favicon: "app/favicon.ico",
             filename: "index.html"
         }),
         new ExtractTextPlugin("[name]-[hash].min.css"),
