@@ -15,7 +15,7 @@ const initialState = {
     traineeDurationOnToilet: 0,
     rewardForVoiding: ""
   },
-  profileId: 0
+  profileId: "0"
 };
 
 const trackerState = (state = initialState, action) => {

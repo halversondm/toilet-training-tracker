@@ -12,7 +12,7 @@ class App extends Component {
     render() {
         const {authenticated} = this.props.data;
         return (
-            <div className="container">
+            <div className="theme-showcase container">
                 <nav className="navbar navbar-default"
                      role="navigation">
                     <div>
@@ -27,8 +27,9 @@ class App extends Component {
                         </div>
                     </div>
                 </nav>
-                <div className="theme-showcase container">
-                    {this.props.children || <Link to="login">Please login.</Link>}
+                <div>
+                    {this.props.children ||
+                    <div><Link to="login">Please login</Link> or <Link to="signup">Sign-up</Link></div>}
                     <hr />
                     <footer>
                         <p>&copy; 2016 halversondm.com</p>

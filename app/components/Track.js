@@ -178,7 +178,7 @@ class Track extends Component {
 }
 
 Track.propTypes = {
-    profileId: React.PropTypes.number
+    profileId: React.PropTypes.string
 };
 
 function select(state) {

@@ -8,6 +8,8 @@ import App from "./components/App";
 import Track from "./components/Track";
 import Login from "./components/Login";
 import Configure from "./components/Configure";
+import Signup from "./components/Signup";
+import SuccessfulSignup from "./components/SuccessfulSignup";
 import {Provider} from "react-redux";
 import {createStore} from "redux";
 import trackerStore from "./reducers";
@@ -34,6 +36,8 @@ render(
                     <Route path="track" component={Track}/>
                     <Route path="configure" component={Configure}/>
                 </Route>
+                <Route path="signup" component={Signup}/>
+                <Route path="successSignup" components={SuccessfulSignup} />
             </Route>
         </Router>
     </Provider>, document.getElementById("root"));

@@ -9,6 +9,7 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import AWS from "aws-sdk";
 import historyApiFallback from "connect-history-api-fallback";
+var uuid = require("uuid");
 
 const isDeveloping = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
@@ -63,6 +64,36 @@ const deleteEmptyKeys = object => {
         }
     });
 };
+
+app.post("/signup", (req, res) => {
+    var signupInfo = req.body;
+    console.log(signupInfo);
+    var profile = {
+        emailAddress: signupInfo.email,
+        key: signupInfo.key,
+        name: signupInfo.name,
+        config: {
+            intervalBetweenToiletVisit: "60",
+            rewardForVoiding: "Ice cream!",
+            intervalBetweenDryCheck: "30",
+            traineeDurationOnToilet: "5"
+        },
+        profileId: uuid.v4()
+    };
+    var params = {
+        TableName: "Profile",
+        Item: profile
+    };
+    docClient.put(params, function (err, data) {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        } else {
+            console.log(data);
+            res.sendStatus(200);
+        }
+    });
+});
 
 app.post("/loginService", (req, res) => {
     var loginInfo = req.body;
