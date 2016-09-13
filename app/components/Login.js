@@ -19,6 +19,10 @@ class Login extends Component {
         this.login = this.login.bind(this);
     }
 
+    componentDidMount() {
+        this.props.dispatch(notAuthenticated());
+    }
+
     login(event) {
         event.preventDefault();
         this.props.dispatch(updateForm(this.state.email, this.state.key));

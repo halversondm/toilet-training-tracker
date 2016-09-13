@@ -5,12 +5,14 @@
 
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import reactMixin from "react-mixin";
+import timerMixin from "react-timer-mixin";
 
 class Configure extends Component {
 
     constructor(props) {
         super(props);
-        this.state = this.props.data;
+        this.state = Object.assign({}, this.props.data, {message: ""});
         this.handleDryCheckChange = this.handleDryCheckChange.bind(this);
         this.handleToiletVisitChange = this.handleToiletVisitChange.bind(this);
         this.handleRewardChange = this.handleRewardChange.bind(this);
@@ -57,15 +59,19 @@ class Configure extends Component {
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
-                console.log("saved config");
+                this.setState({message: "  Saved!"});
             } else {
-                console.log("unsucc ", xhr.responseText);
+                this.setState({message: "  There was an error saving your request. Please try again later"});
             }
         };
         xhr.onerror = () => {
-            console.log(xhr);
+            this.setState({message: "  Please check your internet connection and try again"});
         };
         xhr.send(data);
+
+        this.setInterval(() => {
+            this.setState({message: ""});
+        }, 1000);
     }
 
     render() {
@@ -118,10 +124,11 @@ class Configure extends Component {
                     </div>
                 </div>
                 <div className="form-group">
-                    <div className="col-sm-offset-2 col-sm-10">
+                    <div className="col-sm-offset-2 col-sm-2">
                         <button className="btn btn-md btn-success" onClick={this.save}>
                             Save
                         </button>
+                        {this.state.message}
                     </div>
                 </div>
             </form>
@@ -132,6 +139,8 @@ class Configure extends Component {
 Configure.propTypes = {
     data: React.PropTypes.object
 };
+
+reactMixin(Configure.prototype, timerMixin);
 
 function select(state) {
     return {

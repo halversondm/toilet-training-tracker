@@ -23,13 +23,18 @@
   "dependencies": {
     "aws-sdk": "2.4.13",
     "bootstrap": "3.3.7",
+    "font-awesome": "4.6.3",
+    "json-loader": "0.5.4",
     "moment": "2.14.1",
+    "moment-timezone": "0.5.5",
     "react": "15.2.1",
     "react-bootstrap": "0.29.5",
     "react-date-picker": "5.3.26",
     "react-dom": "15.2.1",
+    "react-mixin": "3.0.5",
     "react-redux": "4.4.5",
     "react-router": "2.5.1",
+    "react-timer-mixin": "0.13.3",
     "redux": "3.5.2",
     "uuid": "2.0.2"
   },

@@ -19,10 +19,13 @@ class App extends Component {
                         <div className="navbar-brand">Toilet Training Tracker</div>
                         <div className="navbar-icons" hidden={!authenticated}>
                             <Link to="/configure">
-                                <i className="glyphicon glyphicon-cog"/>
+                                <i className="fa fa-cog" title="Configure"/>
                             </Link>
                             <Link to="/track">
-                                <i className="glyphicon glyphicon-road"/>
+                                <i className="fa fa-road" title="Track"/>
+                            </Link>
+                            <Link to="/login">
+                                <i className="fa fa-sign-out" title="Logout" />
                             </Link>
                         </div>
                     </div>

@@ -39,11 +39,14 @@ var config = {
             test: /\.css$/,
             loader: ExtractTextPlugin.extract("style", "css")
         }, {
-            test: /\.(ttf|eot|woff2|svg|png|woff|php)$/,
+            test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
             loader: "file-loader?name=assets/[name].[ext]"
         }, {
             test: /\.(jpg|jpeg)$/,
             loader: "file-loader?name=images/[name].[ext]"
+        }, {
+            test: /\.json?$/,
+            loader: "json-loader"
         }]
     }
 };

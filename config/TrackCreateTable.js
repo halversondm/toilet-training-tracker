@@ -15,7 +15,7 @@ var dynamodb = new AWS.DynamoDB();
 var params = {
     TableName: "Track",
     KeySchema: [{AttributeName: "profileId", KeyType: "HASH"}, {AttributeName: "date", KeyType: "RANGE"}],
-    AttributeDefinitions: [{AttributeName: "profileId", AttributeType: "N"}, {
+    AttributeDefinitions: [{AttributeName: "profileId", AttributeType: "S"}, {
         AttributeName: "date",
         AttributeType: "S"
     }],

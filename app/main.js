@@ -15,6 +15,7 @@ import {createStore} from "redux";
 import trackerStore from "./reducers";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap-theme.css";
+import "font-awesome/css/font-awesome.css";
 import "./main.css";
 import {Router, Route, browserHistory} from "react-router";
 

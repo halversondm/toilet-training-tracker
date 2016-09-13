@@ -4,8 +4,8 @@
 "use strict";
 
 import React, {Component} from "react";
-import {DateField} from "react-date-picker";
-import moment from "moment";
+import {DateField, DatePicker, Footer} from "react-date-picker";
+import moment from "moment-timezone";
 import {connect} from "react-redux";
 import "react-date-picker/index.css";
 
@@ -16,11 +16,14 @@ class Track extends Component {
         this.initialState = this.initialState.bind(this);
         this.state = this.initialState();
         this.save = this.save.bind(this);
+        this.onDateChange = this.onDateChange.bind(this);
     }
 
     initialState() {
+        var date = moment();
+        console.log(date);
         return {
-            date: moment(),
+            date: date,
             typeOfActivity: "",
             duration: 0,
             typeOfVoid: "",
@@ -50,18 +53,34 @@ class Track extends Component {
         xhr.send(data);
     }
 
+    onDateChange(date) {
+        var newDate = moment.tz(date, "MM/DD/YYYY hh:mm a", moment.tz.guess());
+        var utcDate = newDate.tz("Etc/UTC");
+        this.setState({date: utcDate});
+    }
+
     render() {
         return <div><h4>Tracking</h4>
             <form className="form-horizontal">
                 <div className="form-group">
                     <label htmlFor="date" className="col-sm-2 control-label">Date</label>
                     <div className="col-sm-10">
-                        <DateField id="date" forceValidDate
+                        <DateField forceValidDate={true}
                                    dateFormat="MM/DD/YYYY hh:mm a"
                                    defaultValue={this.state.date}
-                                   onChange={date => {
-                                       this.setState({date: date});
-                                   }}/>
+                                   updateOnDateClick={true}
+                                   onChange={this.onDateChange}>
+                            <DatePicker
+                                navigation={true}
+                                locale="en"
+                                forceValidDate={true}
+                                highlightWeekends={true}
+                                highlightToday={true}
+                                weekNumbers={false}
+                                weekStartDay={0}>
+                                <Footer todayButton={false} clearButton={false} okButton={false}
+                                        cancelButton={false}/></DatePicker>
+                        </DateField>
                     </div>
                 </div>
                 <div className="form-group">
