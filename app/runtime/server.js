@@ -95,6 +95,31 @@ app.post("/loginService", (req, res) => {
     });
 });
 
+app.post("/reportData", (req, res) => {
+    var info = req.body;
+    console.log(info);
+    var params = {
+        TableName: "Track",
+        KeyConditionExpression: "profileId = :profileId AND #date between :rangeStart AND :rangeEnd",
+        ExpressionAttributeNames: {"#date": "date"},
+        ExpressionAttributeValues: {
+            ":profileId": info.profileId,
+            ":rangeStart": info.rangeStart,
+            ":rangeEnd": info.rangeEnd
+        }
+    };
+
+    docClient.query(params, function (err, data) {
+        if (err) {
+            console.log(JSON.stringify(err, null, 2));
+        } else {
+            console.log(data);
+            res.send(data);
+            console.log(JSON.stringify(data, null, 2));
+        }
+    });
+});
+
 app.post("/saveTrack", (req, res) => {
     var track = req.body;
     deleteEmptyKeys(track);

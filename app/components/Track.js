@@ -20,10 +20,8 @@ class Track extends Component {
     }
 
     initialState() {
-        var date = moment();
-        console.log(date);
         return {
-            date: date,
+            date: moment(),
             typeOfActivity: "",
             duration: 0,
             typeOfVoid: "",

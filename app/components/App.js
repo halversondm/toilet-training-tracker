@@ -18,6 +18,9 @@ class App extends Component {
                     <div>
                         <div className="navbar-brand">Toilet Training Tracker</div>
                         <div className="navbar-icons" hidden={!authenticated}>
+                            <Link to="/report">
+                                <i className="fa fa-flag" title="Report" />
+                            </Link>
                             <Link to="/configure">
                                 <i className="fa fa-cog" title="Configure"/>
                             </Link>
