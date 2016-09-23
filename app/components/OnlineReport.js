@@ -36,7 +36,8 @@ class OnlineReport extends Component {
             activeDate: date,
             rangeStart: date,
             rangeEnd: date,
-            hiddenMonthView: true
+            hiddenMonthView: true,
+            downloadMessage: ""
         };
         this.rows = this.rows.bind(this);
         this.handleGridSort = this.handleGridSort.bind(this);
@@ -47,6 +48,7 @@ class OnlineReport extends Component {
         this.onActiveDateChange = this.onActiveDateChange.bind(this);
         this.onDateChangeClick = this.onDateChangeClick.bind(this);
         this.getData = this.getData.bind(this);
+        this.download = this.download.bind(this);
     }
 
     componentDidMount() {
@@ -140,6 +142,55 @@ class OnlineReport extends Component {
         }
     }
 
+    download(event) {
+        event.preventDefault();
+        var data = JSON.stringify({
+            profileId: this.props.profileId,
+            rangeStart: moment(this.state.rangeStart + beginOfDay, dateFormat),
+            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat)
+        });
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/excel");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.responseType = "arraybuffer";
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 400) {
+                var filename = "";
+                var disposition = xhr.getResponseHeader("Content-Disposition");
+                if (disposition && disposition.indexOf("attachment") !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches !== null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, "");
+                    }
+                }
+                var type = xhr.getResponseHeader("Content-Type");
+                var blob = new Blob([xhr.response], {type: type});
+                var anchor = document.createElement("a");
+                var downloadUrl = window.URL.createObjectURL(blob);
+                anchor.style.display = "none";
+                if (typeof anchor.download === "undefined") {
+                    window.location = downloadUrl;
+                } else {
+                    anchor.href = downloadUrl;
+                    anchor.download = filename;
+                    document.body.appendChild(anchor);
+                    anchor.click();
+                    document.body.removeChild(anchor);
+                }
+                setTimeout(function () {
+                    URL.revokeObjectURL(downloadUrl);
+                }, 100);
+            } else if (xhr.status === 404) {
+                this.setState({downloadMessage: "No file available for date range."});
+            }
+        };
+        xhr.onerror = () => {
+            console.log(xhr);
+        };
+        xhr.send(data);
+    }
+
     render() {
         var rangeStart = this.state.rangeStart;
         var rangeEnd = this.state.rangeEnd;
@@ -159,6 +210,12 @@ class OnlineReport extends Component {
                                    defaultRange={[this.state.rangeStart, this.state.rangeEnd]}
                                    onActiveDateChange={this.onActiveDateChange}
                                    onRangeChange={this.onRangeChange}/>
+                    </div>
+                    <div className="col-sm-5">
+                        <button className="btn btn-success" style={{float: "right"}} title="Download Excel" onClick={this.download}><i
+                            className="fa fa-file-excel-o"
+                            aria-hidden="true"/>
+                        </button>
                     </div>
                 </div>
                 <ReactDataGrid columns={columns} minHeight={500} rowGetter={this.rows}

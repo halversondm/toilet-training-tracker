@@ -5,12 +5,14 @@
 console.log("halversondm toilettracker site");
 
 var AWS = require("aws-sdk");
+var fs = require("fs");
 var path = require("path");
 var express = require("express");
 var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var port = 3001;
 var app = express();
+var Excel = require("execljs");
 var uuid = require("uuid");
 
 AWS.config.update({
@@ -35,6 +37,72 @@ const deleteEmptyKeys = object => {
         }
     });
 };
+
+var reportData = (info, callback) => {
+    var params = {
+        TableName: "Track",
+        KeyConditionExpression: "profileId = :profileId AND #date between :rangeStart AND :rangeEnd",
+        ExpressionAttributeNames: {"#date": "date"},
+        ExpressionAttributeValues: {
+            ":profileId": info.profileId,
+            ":rangeStart": info.rangeStart,
+            ":rangeEnd": info.rangeEnd
+        }
+    };
+
+    docClient.query(params, callback);
+};
+
+app.post("/excel", (req, res) => {
+    var info = req.body;
+    console.log(info);
+    reportData(info, (err, data) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        if (data.Items.length > 0) {
+            var fileName = path.resolve(__dirname, info.profileId + ".xlsx");
+
+            fs.unlink(fileName, ex => {
+                // file not found swallow
+            });
+
+            var workbook = new Excel.Workbook();
+            workbook.creator = "halversondm.com";
+            workbook.lastModifiedBy = "halversondm.com";
+            workbook.created = new Date();
+            workbook.modified = new Date();
+
+            var sheet = workbook.addWorksheet("ToiletData");
+            sheet.columns = [
+                {header: "Date and Time", key: "date"},
+                {header: "Duration on the Toilet", key: "duration"},
+                {header: "Type of Activity", key: "typeOfActivity"},
+                {header: "Type of Void", key: "typeOfVoid"},
+                {header: "Notes", key: "notes"},
+                {header: "Was the Visit Prompted?", key: "promptedVisit"}
+            ];
+
+            data.Items.forEach(item => {
+                sheet.addRow({
+                    date: item.date,
+                    duration: item.duration,
+                    typeOfActivity: item.typeOfActivity,
+                    typeOfVoid: item.typeOfVoid,
+                    notes: item.notes,
+                    promptedVisit: item.promptedVisit
+                });
+            });
+
+            workbook.xlsx.writeFile(fileName).then(() => {
+                res.download(fileName);
+            });
+        } else {
+            res.sendStatus(404);
+        }
+    });
+});
 
 app.post("/signup", (req, res) => {
     var signupInfo = req.body;
@@ -98,25 +166,13 @@ app.post("/loginService", (req, res) => {
 app.post("/reportData", (req, res) => {
     var info = req.body;
     console.log(info);
-    var params = {
-        TableName: "Track",
-        KeyConditionExpression: "profileId = :profileId AND #date between :rangeStart AND :rangeEnd",
-        ExpressionAttributeNames: {"#date": "date"},
-        ExpressionAttributeValues: {
-            ":profileId": info.profileId,
-            ":rangeStart": info.rangeStart,
-            ":rangeEnd": info.rangeEnd
-        }
-    };
-
-    docClient.query(params, function (err, data) {
+    reportData(info, (err, data) => {
         if (err) {
             console.log(JSON.stringify(err, null, 2));
         } else {
-            console.log(data);
-            res.send(data);
             console.log(JSON.stringify(data, null, 2));
         }
+        res.send(data);
     });
 });
 
