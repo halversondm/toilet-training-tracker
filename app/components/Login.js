@@ -88,7 +88,7 @@ class Login extends Component {
                 </div>
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
-                        <button className="btn btn-md btn-default" onClick={this.login}>
+                        <button className="btn btn-primary" onClick={this.login}>
                             Login
                         </button>
                     </div>

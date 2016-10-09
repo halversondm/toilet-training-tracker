@@ -93,7 +93,7 @@ class Signup extends Component {
                 </div>
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-10">
-                        <button className="btn btn-md btn-default" onClick={this.signup}>
+                        <button className="btn btn-primary" onClick={this.signup}>
                             Save
                         </button>
                     </div>

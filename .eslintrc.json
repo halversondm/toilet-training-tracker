@@ -86,7 +86,8 @@
     "max-depth": "error",
     "max-len": [
       "error",
-      150
+      150,
+      { "ignoreUrls": true }
     ],
     "max-nested-callbacks": "error",
     "max-params": "error",

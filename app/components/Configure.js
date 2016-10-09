@@ -125,7 +125,7 @@ class Configure extends Component {
                 </div>
                 <div className="form-group">
                     <div className="col-sm-offset-2 col-sm-2">
-                        <button className="btn btn-md btn-success" onClick={this.save}>
+                        <button className="btn btn-primary" onClick={this.save}>
                             Save
                         </button>
                         {this.state.message}

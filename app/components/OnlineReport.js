@@ -198,7 +198,7 @@ class OnlineReport extends Component {
             <div>
                 <div className="row">
                     <label className="col-sm-2">Date Range</label>
-                    <button className="btn btn-default col-sm-2"
+                    <button className="btn btn-primary col-sm-2"
                             onClick={this.onDateChangeClick}>{rangeStart + " - " + rangeEnd}</button>
                     <div className="col-sm-3">
                         <MonthView hidden={this.state.hiddenMonthView}

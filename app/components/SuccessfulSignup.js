@@ -11,7 +11,11 @@ class SuccessfulSignup extends Component {
     render() {
         return (
             <div>
-                Your sign-up was successful, <Link to="login">Please login</Link>
+                Your sign-up was successful.
+                <br/>
+                <Link to="login">
+                    <button type="button" className="btn btn-primary">Login</button>
+                </Link>
             </div>
         );
     }
