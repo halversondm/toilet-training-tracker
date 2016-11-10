@@ -12,7 +12,7 @@ var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var port = 3001;
 var app = express();
-var Excel = require("execljs");
+var Excel = require("exceljs");
 var uuid = require("uuid");
 
 AWS.config.update({
