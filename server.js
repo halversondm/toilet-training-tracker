@@ -1,21 +1,14 @@
 "use strict";
 
-import path from "path";
-import fs from "fs";
-import express from "express";
-import webpack from "webpack";
-import webpackMiddleware from "webpack-dev-middleware";
-import webpackHotMiddleware from "webpack-hot-middleware";
-import config from "./webpack.config.js";
-import morgan from "morgan";
-import bodyParser from "body-parser";
-import AWS from "aws-sdk";
-import historyApiFallback from "connect-history-api-fallback";
-import Excel from "exceljs";
+const path = require("path");
+const fs = require("fs");
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const AWS = require("aws-sdk");
+const Excel = require("exceljs");
+const uuid = require("uuid");
 
-var uuid = require("uuid");
-
-const isDeveloping = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -24,42 +17,16 @@ AWS.config.update({
     endpoint: "http://localhost:8000"
 });
 
-var docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan("dev"));
+app.use(express.static(path.resolve(__dirname, "dist")));
 
-if (isDeveloping) {
-    console.log("Running the 'hot' version of the code");
-    const compiler = webpack(config);
-    app.use(historyApiFallback({verbose: false}));
-    app.use(webpackMiddleware(compiler, {
-        publicPath: config.output.publicPath,
-        contentBase: "app",
-        hot: true,
-        quiet: false,
-        noInfo: false,
-        lazy: false,
-        stats: {
-            colors: true,
-            hash: false,
-            timings: true,
-            chunks: false,
-            chunkModules: false,
-            modules: false
-        }
-    }));
-
-    app.use(webpackHotMiddleware(compiler));
-} else {
-    console.log("Running the 'production' version of the code");
-    app.use(express.static(path.resolve(__dirname, "dist")));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "dist", "index.html"));
-    });
-}
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+});
 
 const deleteEmptyKeys = object => {
     Object.keys(object).forEach(key => {
@@ -69,8 +36,8 @@ const deleteEmptyKeys = object => {
     });
 };
 
-var reportData = (info, callback) => {
-    var params = {
+const reportData = (info, callback) => {
+    const params = {
         TableName: "Track",
         KeyConditionExpression: "profileId = :profileId AND #date between :rangeStart AND :rangeEnd",
         ExpressionAttributeNames: {"#date": "date"},
@@ -85,7 +52,7 @@ var reportData = (info, callback) => {
 };
 
 app.post("/excel", (req, res) => {
-    var info = req.body;
+    const info = req.body;
     console.log(info);
     reportData(info, (err, data) => {
         if (err) {
@@ -93,19 +60,19 @@ app.post("/excel", (req, res) => {
             return;
         }
         if (data.Items.length > 0) {
-            var fileName = path.resolve(__dirname, info.profileId + ".xlsx");
+            const fileName = path.resolve(__dirname, info.profileId + ".xlsx");
 
             fs.unlink(fileName, ex => {
                 // file not found swallow
             });
 
-            var workbook = new Excel.Workbook();
+            let workbook = new Excel.Workbook();
             workbook.creator = "halversondm.com";
             workbook.lastModifiedBy = "halversondm.com";
             workbook.created = new Date();
             workbook.modified = new Date();
 
-            var sheet = workbook.addWorksheet("ToiletData");
+            const sheet = workbook.addWorksheet("ToiletData");
             sheet.columns = [
                 {header: "Date and Time", key: "date"},
                 {header: "Duration on the Toilet", key: "duration"},
@@ -136,9 +103,9 @@ app.post("/excel", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-    var signupInfo = req.body;
+    const signupInfo = req.body;
     console.log(signupInfo);
-    var profile = {
+    const profile = {
         emailAddress: signupInfo.email,
         key: signupInfo.key,
         name: signupInfo.name,
@@ -150,7 +117,7 @@ app.post("/signup", (req, res) => {
         },
         profileId: uuid.v4()
     };
-    var params = {
+    const params = {
         TableName: "Profile",
         Item: profile
     };
@@ -166,9 +133,9 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/loginService", (req, res) => {
-    var loginInfo = req.body;
+    const loginInfo = req.body;
     console.log(loginInfo);
-    var params = {
+    const params = {
         TableName: "Profile",
         Key: {
             "emailAddress": loginInfo.email
@@ -195,7 +162,7 @@ app.post("/loginService", (req, res) => {
 });
 
 app.post("/reportData", (req, res) => {
-    var info = req.body;
+    const info = req.body;
     console.log(info);
     reportData(info, (err, data) => {
         if (err) {
@@ -208,10 +175,10 @@ app.post("/reportData", (req, res) => {
 });
 
 app.post("/saveTrack", (req, res) => {
-    var track = req.body;
+    const track = req.body;
     deleteEmptyKeys(track);
     console.log(track);
-    var params = {
+    const params = {
         TableName: "Track",
         Item: track
     };
@@ -228,11 +195,11 @@ app.post("/saveTrack", (req, res) => {
 });
 
 app.post("/saveConfig", (req, res) => {
-    var configuration = req.body;
+    const configuration = req.body;
     console.log(configuration);
-    var updateExpress = `set config.intervalBetweenToiletVisit = :a, config.rewardForVoiding = :b, 
+    const updateExpress = `set config.intervalBetweenToiletVisit = :a, config.rewardForVoiding = :b, 
     config.intervalBetweenDryCheck = :c, config.traineeDurationOnToilet = :d`;
-    var params = {
+    const params = {
         TableName: "Profile",
         Key: {"emailAddress": configuration.emailAddress},
         UpdateExpression: updateExpress,

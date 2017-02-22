@@ -84,7 +84,8 @@ class App extends Component {
                     {this.props.children || this.appHome()}
                     <hr />
                     <footer>
-                        <p>&copy; 2016 halversondm.com</p>
+                        <p>&copy; 2016 halversondm.com - <Link to="/privacy">Privacy Policy</Link> - <Link
+                            to="/support">Support</Link></p>
                     </footer>
                 </div>
             </div>

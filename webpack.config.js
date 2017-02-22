@@ -1,18 +1,21 @@
 "use strict";
 
-var path = require("path");
-var webpack = require("webpack");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-console.log("Node environment ", process.env.NODE_ENV);
+console.log("Node environment", process.env.NODE_ENV);
 
 if (process.env.NODE_ENV !== "development" && process.env.NODE_ENV !== "production") {
     throw new Error("NODE_ENV is required, values are 'development' or 'production'");
 }
 
-var config = {
+let config = {
+    entry: [
+        path.resolve(__dirname, "app/main.js")
+    ],
     plugins: [
         new HtmlWebpackPlugin({
             template: "app/index.tpl.html",
@@ -53,10 +56,6 @@ var config = {
 
 if (process.env.NODE_ENV === "development") {
     config.devtool = "eval";
-    config.entry = [
-        "webpack-hot-middleware/client?reload=true",
-        path.resolve(__dirname, "app/main.js")
-    ];
     config.output = {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
@@ -67,11 +66,7 @@ if (process.env.NODE_ENV === "development") {
             from: "app/extras"
         }
     ]));
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
 } else {
-    config.entry = [
-        path.resolve(__dirname, "app/main.js")
-    ];
     config.output = {
         path: path.resolve(__dirname, "dist"),
         filename: "[name]-[hash].min.js",

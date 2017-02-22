@@ -11,6 +11,8 @@ import Configure from "./components/Configure";
 import Signup from "./components/Signup";
 import SuccessfulSignup from "./components/SuccessfulSignup";
 import OnlineReport from "./components/OnlineReport";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import Support from "./components/Support";
 import {Provider} from "react-redux";
 import {createStore} from "redux";
 import trackerStore from "./reducers";
@@ -41,6 +43,8 @@ render(
                 </Route>
                 <Route path="signup" component={Signup}/>
                 <Route path="successSignup" components={SuccessfulSignup} />
+                <Route path="privacy" component={PrivacyPolicy}/>
+                <Route path="support" component={Support}/>
             </Route>
         </Router>
     </Provider>, document.getElementById("root"));
