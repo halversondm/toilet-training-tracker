@@ -2,8 +2,8 @@
  * Created by Daniel on 7/26/2016.
  */
 "use strict";
-import React from "react";
-import {render} from "react-dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import App from "./components/App";
 import Track from "./components/Track";
 import Login from "./components/Login";
@@ -31,7 +31,7 @@ function checkAuth(nextState, replace) {
     }
 }
 
-render(
+ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>

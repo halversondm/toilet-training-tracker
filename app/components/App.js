@@ -3,12 +3,12 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 import {Link} from "react-router";
 import {connect} from "react-redux";
 import appStore from "../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg";
 
-class App extends Component {
+class App extends React.Component {
 
     appHome() {
         return (
@@ -102,10 +102,10 @@ App.contextTypes = {
     router: React.PropTypes.object
 };
 
-function select(state) {
+function mapStateToProps(state) {
     return {
         data: state
     };
 }
 
-export default connect(select)(App);
+export default connect(mapStateToProps)(App);

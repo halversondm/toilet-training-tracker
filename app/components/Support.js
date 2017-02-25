@@ -3,9 +3,9 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 
-class Support extends Component {
+class Support extends React.Component {
 
     render() {
         return (

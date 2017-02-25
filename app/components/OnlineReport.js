@@ -2,7 +2,7 @@
  * Created by halversondm on 9/16/16.
  */
 "use strict";
-import React, {Component} from "react";
+import * as React from "react";
 import ReactDataGrid from "react-data-grid";
 import {Toolbar, Data} from "react-data-grid/addons";
 import "react-data-grid/dist/react-data-grid.css";
@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import {MonthView} from "react-date-picker";
 import moment from "moment-timezone";
 
-var columns = [
+const columns = [
     {key: "date", name: "Date and Time", sortable: true},
     {key: "duration", name: "Duration on the Toilet", sortable: true, filterable: true},
     {key: "typeOfActivity", name: "Type of Activity", sortable: true, filterable: true},
@@ -24,10 +24,10 @@ const beginOfDay = "T00:00:00.000-" + timeZone.getTimezoneOffset() / 60;
 const endOfDay = "T23:59:59.999-" + timeZone.getTimezoneOffset() / 60;
 const dateFormat = "MM/DD/YYYYTHH:mm:ss.SSSZ";
 
-class OnlineReport extends Component {
+class OnlineReport extends React.Component {
     constructor(props) {
         super(props);
-        var date = moment().format("MM/DD/YYYY");
+        const date = moment().format("MM/DD/YYYY");
         this.state = {
             rows: [],
             filters: {},
@@ -232,8 +232,8 @@ OnlineReport.propTypes = {
     profileId: React.PropTypes.string
 };
 
-function select(state) {
+function mapStateToProps(state) {
     return {profileId: state.profileId};
 }
 
-export default connect(select)(OnlineReport);
+export default connect(mapStateToProps)(OnlineReport);

@@ -3,9 +3,9 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 
-class PrivacyPolicy extends Component {
+class PrivacyPolicy extends React.Component {
 
     render() {
         return (

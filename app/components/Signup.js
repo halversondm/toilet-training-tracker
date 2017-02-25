@@ -3,10 +3,10 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 import {withRouter} from "react-router";
 
-class Signup extends Component {
+class Signup extends React.Component {
 
     constructor(props) {
         super(props);

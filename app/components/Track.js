@@ -3,13 +3,13 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 import {DateField, DatePicker, Footer} from "react-date-picker";
 import moment from "moment-timezone";
 import {connect} from "react-redux";
 import "react-date-picker/index.css";
 
-class Track extends Component {
+class Track extends React.Component {
 
     constructor(props) {
         super(props);
@@ -198,10 +198,10 @@ Track.propTypes = {
     profileId: React.PropTypes.string
 };
 
-function select(state) {
+function mapStateToProps(state) {
     return {
         profileId: state.profileId
     };
 }
 
-export default connect(select)(Track);
+export default connect(mapStateToProps)(Track);

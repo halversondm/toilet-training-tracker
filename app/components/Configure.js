@@ -3,10 +3,10 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
 import {connect} from "react-redux";
 
-class Configure extends Component {
+class Configure extends React.Component {
 
     constructor(props) {
         super(props);
@@ -147,10 +147,10 @@ Configure.propTypes = {
     data: React.PropTypes.object
 };
 
-function select(state) {
+function mapStateToProps(state) {
     return {
         data: state
     };
 }
 
-export default connect(select)(Configure);
+export default connect(mapStateToProps)(Configure);

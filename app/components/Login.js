@@ -3,12 +3,13 @@
  */
 "use strict";
 
-import React, {Component} from "react";
+import * as React from "react";
+import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
-import {updateForm, authenticated, notAuthenticated, setConfig} from "../actions";
+import * as TrackerActions from "../actions";
 
-class Login extends Component {
+class Login extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,12 +21,12 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(notAuthenticated());
+        this.props.notAuthenticated();
     }
 
     login(event) {
         event.preventDefault();
-        this.props.dispatch(updateForm(this.state.email, this.state.key));
+        this.props.updateForm(this.state.email, this.state.key);
         var data = JSON.stringify(this.state);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/loginService");
@@ -33,12 +34,12 @@ class Login extends Component {
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
                 const response = JSON.parse(xhr.responseText);
-                this.props.dispatch(authenticated());
-                this.props.dispatch(setConfig(response.config, response.profileId));
+                this.props.authenticated();
+                this.props.setConfig(response.config, response.profileId);
                 this.props.router.replace("/track");
             } else {
                 console.log("unsucc ", xhr.responseText);
-                this.props.dispatch(notAuthenticated());
+                this.props.notAuthenticated();
                 this.setState({error: true});
             }
         };
@@ -99,14 +100,21 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-    dispatch: React.PropTypes.func,
+    updateForm: React.PropTypes.func,
+    authenticated: React.PropTypes.func,
+    notAuthenticated: React.PropTypes.func,
+    setConfig: React.PropTypes.func,
     router: React.PropTypes.object
 };
 
-function select(state) {
+function mapStateToProps(state) {
     return {
         data: state
     };
 }
 
-export default connect(select)(withRouter(Login));
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(TrackerActions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
