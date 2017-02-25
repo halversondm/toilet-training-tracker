@@ -5,8 +5,6 @@
 
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import reactMixin from "react-mixin";
-import timerMixin from "react-timer-mixin";
 
 class Configure extends Component {
 
@@ -18,6 +16,15 @@ class Configure extends Component {
         this.handleRewardChange = this.handleRewardChange.bind(this);
         this.handleTraineeDurationChange = this.handleTraineeDurationChange.bind(this);
         this.save = this.save.bind(this);
+        this.clearMessage = this.clearMessage.bind(this);
+    }
+
+    componentDidMount() {
+        this.intervalId = setInterval(this.clearMessage, 3000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalId);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -68,10 +75,10 @@ class Configure extends Component {
             this.setState({message: "  Please check your internet connection and try again"});
         };
         xhr.send(data);
+    }
 
-        this.setInterval(() => {
-            this.setState({message: ""});
-        }, 1000);
+    clearMessage() {
+        this.setState({message: ""});
     }
 
     render() {
@@ -139,8 +146,6 @@ class Configure extends Component {
 Configure.propTypes = {
     data: React.PropTypes.object
 };
-
-reactMixin(Configure.prototype, timerMixin);
 
 function select(state) {
     return {

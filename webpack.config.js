@@ -13,9 +13,12 @@ if (process.env.NODE_ENV !== "development" && process.env.NODE_ENV !== "producti
 }
 
 let config = {
-    entry: [
-        path.resolve(__dirname, "app/main.js")
-    ],
+    entry: path.resolve(__dirname, "app/main.js"),
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: "[name]-[hash].min.js",
+        publicPath: "/"
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: "app/index.tpl.html",
@@ -28,10 +31,11 @@ let config = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
+        new CopyWebpackPlugin([
+            {from: "app/images/", to: "images/"}, {
+                from: "app/extras"
+            }, {from: "app/runtime"}
+        ])
     ],
     module: {
         loaders: [{
@@ -55,28 +59,8 @@ let config = {
 };
 
 if (process.env.NODE_ENV === "development") {
-    config.devtool = "eval";
-    config.output = {
-        path: path.resolve(__dirname, "dist"),
-        filename: "[name].js",
-        publicPath: "/"
-    };
-    config.plugins.push(new CopyWebpackPlugin([
-        {from: "app/images/", to: "images/"}, {
-            from: "app/extras"
-        }
-    ]));
+    config.devtool = "source-map";
 } else {
-    config.output = {
-        path: path.resolve(__dirname, "dist"),
-        filename: "[name]-[hash].min.js",
-        publicPath: "/"
-    };
-    config.plugins.push(new CopyWebpackPlugin([
-        {from: "app/images/", to: "images/"}, {
-            from: "app/extras"
-        }, {from: "app/runtime"}
-    ]));
     config.plugins.push(new webpack.optimize.UglifyJsPlugin({
         compressor: {
             warnings: false,
