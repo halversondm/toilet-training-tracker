@@ -32,9 +32,9 @@ let config = {
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
         new CopyWebpackPlugin([
-            {from: "app/images/", to: "images/"}, {
-                from: "app/extras"
-            }, {from: "app/runtime"}
+            {from: "app/images/", to: "images/"},
+            {from: "app/extras"},
+            {from: "app/runtime"}
         ])
     ],
     module: {

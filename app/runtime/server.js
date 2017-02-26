@@ -10,17 +10,13 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
-const port = 3001;
-const app = express();
 const Excel = require("exceljs");
 const uuid = require("uuid");
 
 let endpoint = "https://dynamodb.us-east-1.amazonaws.com";
-let fileLocation = __dirname;
 
 if (process.env.NODE_ENV === "development") {
     endpoint = "http://localhost:8000";
-    fileLocation = path.join(__dirname, "dist");
 }
 
 AWS.config.update({
@@ -29,14 +25,15 @@ AWS.config.update({
 });
 
 const docClient = new AWS.DynamoDB.DocumentClient();
+const port = 3001;
+const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan("common"));
-app.use(express.static(fileLocation));
-
+app.use(express.static(__dirname));
 app.get("*", (req, res) => {
-    res.sendFile(path.join(fileLocation, "index.html"));
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 const deleteEmptyKeys = object => {
