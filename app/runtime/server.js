@@ -1,33 +1,42 @@
 /*
- Main production server configuration using NodeJS and ExpressJS
+ Main server configuration using NodeJS and ExpressJS
  */
 "use strict";
 console.log("halversondm toilettracker site");
 
-var AWS = require("aws-sdk");
-var fs = require("fs");
-var path = require("path");
-var express = require("express");
-var bodyParser = require("body-parser");
-var morgan = require("morgan");
-var port = 3001;
-var app = express();
-var Excel = require("exceljs");
-var uuid = require("uuid");
+const AWS = require("aws-sdk");
+const fs = require("fs");
+const path = require("path");
+const express = require("express");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const port = 3001;
+const app = express();
+const Excel = require("exceljs");
+const uuid = require("uuid");
+
+let endpoint = "https://dynamodb.us-east-1.amazonaws.com";
+let fileLocation = __dirname;
+
+if (process.env.NODE_ENV === "development") {
+    endpoint = "http://localhost:8000";
+    fileLocation = path.join(__dirname, "dist");
+}
 
 AWS.config.update({
     region: "us-east-1",
-    endpoint: "https://dynamodb.us-east-1.amazonaws.com"
+    endpoint: endpoint
 });
 
-var docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan("common"));
-app.use(express.static(__dirname));
-app.get("*", function response(req, res) {
-    res.sendFile(path.join(__dirname, "index.html"));
+app.use(express.static(fileLocation));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(fileLocation, "index.html"));
 });
 
 const deleteEmptyKeys = object => {
@@ -38,8 +47,8 @@ const deleteEmptyKeys = object => {
     });
 };
 
-var reportData = (info, callback) => {
-    var params = {
+const reportData = (info, callback) => {
+    const params = {
         TableName: "Track",
         KeyConditionExpression: "profileId = :profileId AND #date between :rangeStart AND :rangeEnd",
         ExpressionAttributeNames: {"#date": "date"},
@@ -54,7 +63,7 @@ var reportData = (info, callback) => {
 };
 
 app.post("/excel", (req, res) => {
-    var info = req.body;
+    const info = req.body;
     console.log(info);
     reportData(info, (err, data) => {
         if (err) {
@@ -62,19 +71,19 @@ app.post("/excel", (req, res) => {
             return;
         }
         if (data.Items.length > 0) {
-            var fileName = path.resolve(__dirname, info.profileId + ".xlsx");
+            const fileName = path.resolve(__dirname, info.profileId + ".xlsx");
 
             fs.unlink(fileName, ex => {
                 // file not found swallow
             });
 
-            var workbook = new Excel.Workbook();
+            const workbook = new Excel.Workbook();
             workbook.creator = "halversondm.com";
             workbook.lastModifiedBy = "halversondm.com";
             workbook.created = new Date();
             workbook.modified = new Date();
 
-            var sheet = workbook.addWorksheet("ToiletData");
+            const sheet = workbook.addWorksheet("ToiletData");
             sheet.columns = [
                 {header: "Date and Time", key: "date"},
                 {header: "Duration on the Toilet", key: "duration"},
@@ -105,9 +114,9 @@ app.post("/excel", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-    var signupInfo = req.body;
+    const signupInfo = req.body;
     console.log(signupInfo);
-    var profile = {
+    const profile = {
         emailAddress: signupInfo.email,
         key: signupInfo.key,
         name: signupInfo.name,
@@ -119,7 +128,7 @@ app.post("/signup", (req, res) => {
         },
         profileId: uuid.v4()
     };
-    var params = {
+    const params = {
         TableName: "Profile",
         Item: profile
     };
@@ -135,9 +144,9 @@ app.post("/signup", (req, res) => {
 });
 
 app.post("/loginService", (req, res) => {
-    var loginInfo = req.body;
+    const loginInfo = req.body;
     console.log(loginInfo);
-    var params = {
+    const params = {
         TableName: "Profile",
         Key: {
             "emailAddress": loginInfo.email
@@ -164,7 +173,7 @@ app.post("/loginService", (req, res) => {
 });
 
 app.post("/reportData", (req, res) => {
-    var info = req.body;
+    const info = req.body;
     console.log(info);
     reportData(info, (err, data) => {
         if (err) {
@@ -177,10 +186,10 @@ app.post("/reportData", (req, res) => {
 });
 
 app.post("/saveTrack", (req, res) => {
-    var track = req.body;
+    const track = req.body;
     deleteEmptyKeys(track);
     console.log(track);
-    var params = {
+    const params = {
         TableName: "Track",
         Item: track
     };
@@ -197,11 +206,11 @@ app.post("/saveTrack", (req, res) => {
 });
 
 app.post("/saveConfig", (req, res) => {
-    var configuration = req.body;
+    const configuration = req.body;
     console.log(configuration);
-    var updateExpress = `set config.intervalBetweenToiletVisit = :a, 
+    const updateExpress = `set config.intervalBetweenToiletVisit = :a, 
   config.rewardForVoiding = :b, config.intervalBetweenDryCheck = :c, config.traineeDurationOnToilet = :d`;
-    var params = {
+    const params = {
         TableName: "Profile",
         Key: {"emailAddress": configuration.emailAddress},
         UpdateExpression: updateExpress,
@@ -225,5 +234,9 @@ app.post("/saveConfig", (req, res) => {
     });
 });
 
-app.listen(port);
-console.info("==> Listening on port %s.", port);
+app.listen(port, "0.0.0.0", err => {
+    if (err) {
+        console.log(err);
+    }
+    console.info("==> Listening on port %s", port);
+});

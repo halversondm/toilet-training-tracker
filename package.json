@@ -5,10 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/halversondm/toilet-training-tracker",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dist/*",
-    "startProd": "cross-env NODE_ENV=production node server",
-    "startHot": "cross-env NODE_ENV=development concurrently \"npm run webpack -- --watch\" \"node server.js\"",
+    "start": "cross-env NODE_ENV=development concurrently \"npm run webpack -- --watch\" \"node app/runtime/server.js\"",
     "eslint": "eslint app/**/**.js --fix",
     "prewebpack": "npm run clean && npm run eslint",
     "webpack": "webpack --config ./webpack.config.js --profile --colors",
