@@ -5,7 +5,7 @@
 
 import * as React from "react";
 
-class Support extends React.Component {
+class Support extends React.Component<any, any> {
 
     render() {
         return (

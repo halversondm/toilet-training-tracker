@@ -7,9 +7,18 @@ import * as React from "react";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
-import * as TrackerActions from "../actions";
+import { temp, ActionCreators } from "../actions";
+import { TrackerState } from "../reducers/index";
+import { ActionCreatorsMapObject } from "@types/react-redux/node_modules/redux";
 
-class Login extends React.Component {
+interface StateProps {
+    data: TrackerState,
+    router: any
+}
+
+type LoginProps = StateProps & ActionCreators;
+
+class Login extends React.Component<LoginProps, any> {
 
     constructor(props) {
         super(props);
@@ -99,22 +108,14 @@ class Login extends React.Component {
     }
 }
 
-Login.propTypes = {
-    updateForm: React.PropTypes.func,
-    authenticated: React.PropTypes.func,
-    notAuthenticated: React.PropTypes.func,
-    setConfig: React.PropTypes.func,
-    router: React.PropTypes.object
-};
-
-function mapStateToProps(state) {
+function mapStateToProps(state: TrackerState) {
     return {
         data: state
     };
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(TrackerActions, dispatch);
+function mapDispatchToProps(dispatch) : ActionCreators {
+    return bindActionCreators(temp, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

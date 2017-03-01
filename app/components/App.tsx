@@ -6,9 +6,15 @@
 import * as React from "react";
 import {Link} from "react-router";
 import {connect} from "react-redux";
-import appStore from "../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg";
+const appStore = require("../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg");
 
-class App extends React.Component {
+interface AppProps {
+    children: any,
+    data: any,
+    router: any
+}
+
+class App extends React.Component<AppProps, any> {
 
     appHome() {
         return (
@@ -92,15 +98,6 @@ class App extends React.Component {
         );
     }
 }
-
-App.propTypes = {
-    children: React.PropTypes.object,
-    data: React.PropTypes.object
-};
-
-App.contextTypes = {
-    router: React.PropTypes.object
-};
 
 function mapStateToProps(state) {
     return {

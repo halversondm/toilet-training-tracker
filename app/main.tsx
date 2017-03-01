@@ -42,7 +42,7 @@ ReactDOM.render(
                     <Route path="report" component={OnlineReport} />
                 </Route>
                 <Route path="signup" component={Signup}/>
-                <Route path="successSignup" components={SuccessfulSignup} />
+                <Route path="successSignup" component={SuccessfulSignup} />
                 <Route path="privacy" component={PrivacyPolicy}/>
                 <Route path="support" component={Support}/>
             </Route>

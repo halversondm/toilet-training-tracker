@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== "development" && process.env.NODE_ENV !== "producti
 }
 
 let config = {
-    entry: path.resolve(__dirname, "app/main.js"),
+    entry: path.resolve(__dirname, "app/main.tsx"),
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name]-[hash].min.js",
@@ -37,24 +37,31 @@ let config = {
             {from: "app/runtime"}
         ])
     ],
+    resolve: {
+        // Add '.ts' and '.tsx' as resolvable extensions.
+        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    },
     module: {
-        loaders: [{
-            test: /\.js?$/,
-            exclude: /node_modules/,
-            loader: "babel"
-        }, {
-            test: /\.css$/,
-            loader: ExtractTextPlugin.extract("style", "css")
-        }, {
-            test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
-            loader: "file-loader?name=assets/[name].[ext]"
-        }, {
-            test: /\.(jpg|jpeg)$/,
-            loader: "file-loader?name=images/[name].[ext]"
-        }, {
-            test: /\.json?$/,
-            loader: "json-loader"
-        }]
+        loaders: [
+            {
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader"
+            }, {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract("style", "css")
+            }, {
+                test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
+                loader: "file-loader?name=assets/[name].[ext]"
+            }, {
+                test: /\.(jpg|jpeg)$/,
+                loader: "file-loader?name=images/[name].[ext]"
+            }, {
+                test: /\.json?$/,
+                loader: "json-loader"
+            }],
+        preLoaders: [
+            {test: /\.js$/, loader: "source-map-loader"}
+        ]
     }
 };
 

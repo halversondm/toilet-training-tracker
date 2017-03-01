@@ -4,9 +4,12 @@
 "use strict";
 
 import * as React from "react";
-import {withRouter} from "react-router";
 
-class Signup extends React.Component {
+interface SignupProps {
+    router: any
+}
+
+class Signup extends React.Component<SignupProps, any> {
 
     constructor(props) {
         super(props);
@@ -102,8 +105,4 @@ class Signup extends React.Component {
     }
 }
 
-Signup.propTypes = {
-    router: React.PropTypes.object
-};
-
-export default withRouter(Signup);
+export default Signup;

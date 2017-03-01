@@ -5,12 +5,22 @@
 
 import * as React from "react";
 import {connect} from "react-redux";
+import * as objectAssign from "object-assign";
+import { TrackerState } from "../reducers/index";
 
-class Configure extends React.Component {
+
+interface ConfigureProps {
+    data: TrackerState
+}
+
+class Configure extends React.Component<ConfigureProps, any> {
+
+    state: any;
+    intervalId: number;
 
     constructor(props) {
         super(props);
-        this.state = Object.assign({}, this.props.data, {message: ""});
+        this.state = objectAssign({}, this.props.data, {message: ""});
         this.handleDryCheckChange = this.handleDryCheckChange.bind(this);
         this.handleToiletVisitChange = this.handleToiletVisitChange.bind(this);
         this.handleRewardChange = this.handleRewardChange.bind(this);
@@ -59,7 +69,7 @@ class Configure extends React.Component {
     save(event) {
         event.preventDefault();
         var currentState = this.state;
-        var dataToSend = Object.assign({}, currentState, {emailAddress: this.props.data.loginForm.email});
+        var dataToSend = objectAssign({}, currentState, {emailAddress: this.props.data.loginForm.email});
         var data = JSON.stringify(dataToSend);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/saveConfig");
@@ -143,11 +153,7 @@ class Configure extends React.Component {
     }
 }
 
-Configure.propTypes = {
-    data: React.PropTypes.object
-};
-
-function mapStateToProps(state) {
+function mapStateToProps(state: TrackerState) {
     return {
         data: state
     };

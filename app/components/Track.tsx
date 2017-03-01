@@ -5,11 +5,17 @@
 
 import * as React from "react";
 import {DateField, DatePicker, Footer} from "react-date-picker";
-import moment from "moment-timezone";
+import * as moment from "moment";
 import {connect} from "react-redux";
 import "react-date-picker/index.css";
+import * as objectAssign from "object-assign";
+import { TrackerState } from "../reducers/index";
 
-class Track extends React.Component {
+interface TrackProps {
+    profileId: string
+}
+
+class Track extends React.Component<TrackProps, any> {
 
     constructor(props) {
         super(props);
@@ -33,7 +39,7 @@ class Track extends React.Component {
     save(event) {
         event.preventDefault();
         var currentState = this.state;
-        var dataToSend = Object.assign({}, currentState, {profileId: this.props.profileId});
+        var dataToSend = objectAssign({}, currentState, {profileId: this.props.profileId});
         var data = JSON.stringify(dataToSend);
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/saveTrack");
@@ -194,11 +200,7 @@ class Track extends React.Component {
     }
 }
 
-Track.propTypes = {
-    profileId: React.PropTypes.string
-};
-
-function mapStateToProps(state) {
+function mapStateToProps(state : TrackerState) {
     return {
         profileId: state.profileId
     };

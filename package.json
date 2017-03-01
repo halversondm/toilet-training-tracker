@@ -7,12 +7,13 @@
   "scripts": {
     "clean": "rimraf dist && mkdir dist",
     "prestart": "npm run clean && cp -R app/runtime/* dist && cd dist && npm install",
-    "start": "cross-env NODE_ENV=development concurrently \"npm run webpack -- --watch\" \"node dist/server.js\"",
+    "start": "cross-env NODE_ENV=development concurrently --kill-others \"npm run webpack -- --watch\" \"node dist/server.js\"",
     "eslint": "eslint app/**/**.js --fix",
     "prewebpack": "npm run eslint",
     "webpack": "webpack --config ./webpack.config.js --profile --colors",
     "prebuild": "npm run clean",
-    "build": "cross-env NODE_ENV=production npm run webpack"
+    "build": "cross-env NODE_ENV=production npm run webpack",
+    "tsc": "tsc -w"
   },
   "keywords": [
     "react",
@@ -21,12 +22,19 @@
   "author": "Dan Halverson <daniel.m.halverson@gmail.com> (http://halversondm.com/)",
   "license": "MIT",
   "dependencies": {
+    "@types/moment-timezone": "0.2.34",
+    "@types/object-assign": "4.0.30",
+    "@types/react": "15.0.12",
+    "@types/react-dom": "0.14.23",
+    "@types/react-redux": "4.4.36",
+    "@types/react-router": "3.0.5",
+    "@types/requirejs": "2.1.28",
     "aws-sdk": "2.4.13",
     "bootstrap": "3.3.7",
     "exceljs": "0.2.24",
     "font-awesome": "4.6.3",
-    "moment": "2.14.1",
-    "moment-timezone": "0.5.5",
+    "moment": "2.17.1",
+    "moment-timezone": "0.5.11",
     "react": "15.2.1",
     "react-bootstrap": "0.29.5",
     "react-data-grid": "^1.0.42",
@@ -38,6 +46,7 @@
     "uuid": "2.0.2"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "3.0.8",
     "babel-cli": "6.6.5",
     "babel-loader": "6.2.4",
     "babel-plugin-transform-react-display-name": "6.23.0",
@@ -55,12 +64,14 @@
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
     "html-webpack-plugin": "2.22.0",
+    "json-loader": "0.5.4",
     "morgan": "1.7.0",
     "react-transform-catch-errors": "1.0.2",
     "redux-devtools": "3.3.1",
     "rimraf": "2.4.3",
+    "source-map-loader": "0.1.6",
     "style-loader": "0.13.1",
-    "webpack": "1.12.14",
-    "json-loader": "0.5.4"
+    "typescript": "2.2.1",
+    "webpack": "1.12.14"
   }
 }

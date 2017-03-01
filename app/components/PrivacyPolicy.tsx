@@ -5,7 +5,7 @@
 
 import * as React from "react";
 
-class PrivacyPolicy extends React.Component {
+class PrivacyPolicy extends React.Component<any, any> {
 
     render() {
         return (

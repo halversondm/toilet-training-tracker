@@ -3,12 +3,15 @@
  */
 "use strict";
 import * as React from "react";
-import ReactDataGrid from "react-data-grid";
+import * as ReactDataGrid from "react-data-grid";
 import {Toolbar, Data} from "react-data-grid/addons";
 import "react-data-grid/dist/react-data-grid.css";
 import {connect} from "react-redux";
 import {MonthView} from "react-date-picker";
-import moment from "moment-timezone";
+import * as moment from "moment";
+import * as objectAssign from "object-assign";
+import { TrackerState } from "../reducers/index";
+
 
 const columns = [
     {key: "date", name: "Date and Time", sortable: true},
@@ -24,7 +27,14 @@ const beginOfDay = "T00:00:00.000-" + timeZone.getTimezoneOffset() / 60;
 const endOfDay = "T23:59:59.999-" + timeZone.getTimezoneOffset() / 60;
 const dateFormat = "MM/DD/YYYYTHH:mm:ss.SSSZ";
 
-class OnlineReport extends React.Component {
+interface OnlineReportProps {
+    profileId: string
+}
+
+class OnlineReport extends React.Component<OnlineReportProps, any> {
+
+    state: any;
+    
     constructor(props) {
         super(props);
         const date = moment().format("MM/DD/YYYY");
@@ -96,13 +106,13 @@ class OnlineReport extends React.Component {
     }
 
     handleGridSort(sortColumn, sortDirection) {
-        var state = Object.assign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
+        var state = objectAssign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
         this.setState(state);
     }
 
     handleFilterChange(filter) {
         console.log(filter);
-        var newFilters = Object.assign({}, this.state.filters);
+        var newFilters = objectAssign({}, this.state.filters);
         if (filter.filterTerm) {
             newFilters[filter.column.key] = filter;
         } else {
@@ -170,7 +180,7 @@ class OnlineReport extends React.Component {
                 var downloadUrl = window.URL.createObjectURL(blob);
                 anchor.style.display = "none";
                 if (typeof anchor.download === "undefined") {
-                    window.location = downloadUrl;
+                    window.location.href = downloadUrl;
                 } else {
                     anchor.href = downloadUrl;
                     anchor.download = filename;
@@ -228,11 +238,7 @@ class OnlineReport extends React.Component {
     }
 }
 
-OnlineReport.propTypes = {
-    profileId: React.PropTypes.string
-};
-
-function mapStateToProps(state) {
+function mapStateToProps(state : TrackerState) {
     return {profileId: state.profileId};
 }
 
