@@ -9,7 +9,7 @@ import * as moment from "moment";
 import {connect} from "react-redux";
 import "react-date-picker/index.css";
 import * as objectAssign from "object-assign";
-import { TrackerState } from "../reducers/index";
+import {TrackerState} from "../reducers/index";
 
 interface TrackProps {
     profileId: string
@@ -200,7 +200,7 @@ class Track extends React.Component<TrackProps, any> {
     }
 }
 
-function mapStateToProps(state : TrackerState) {
+function mapStateToProps(state: TrackerState) {
     return {
         profileId: state.profileId
     };

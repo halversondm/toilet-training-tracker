@@ -39,10 +39,10 @@ ReactDOM.render(
                 <Route onEnter={checkAuth}>
                     <Route path="track" component={Track}/>
                     <Route path="configure" component={Configure}/>
-                    <Route path="report" component={OnlineReport} />
+                    <Route path="report" component={OnlineReport}/>
                 </Route>
                 <Route path="signup" component={Signup}/>
-                <Route path="successSignup" component={SuccessfulSignup} />
+                <Route path="successSignup" component={SuccessfulSignup}/>
                 <Route path="privacy" component={PrivacyPolicy}/>
                 <Route path="support" component={Support}/>
             </Route>

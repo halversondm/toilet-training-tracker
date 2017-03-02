@@ -7,9 +7,8 @@ import * as React from "react";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {withRouter} from "react-router";
-import { temp, ActionCreators } from "../actions";
-import { TrackerState } from "../reducers/index";
-import { ActionCreatorsMapObject } from "@types/react-redux/node_modules/redux";
+import {temp, ActionCreators} from "../actions";
+import {TrackerState} from "../reducers/index";
 
 interface StateProps {
     data: TrackerState,
@@ -114,7 +113,7 @@ function mapStateToProps(state: TrackerState) {
     };
 }
 
-function mapDispatchToProps(dispatch) : ActionCreators {
+function mapDispatchToProps(dispatch): ActionCreators {
     return bindActionCreators(temp, dispatch);
 }
 

@@ -6,7 +6,7 @@
 import * as React from "react";
 import {connect} from "react-redux";
 import * as objectAssign from "object-assign";
-import { TrackerState } from "../reducers/index";
+import {TrackerState} from "../reducers/index";
 
 
 interface ConfigureProps {
