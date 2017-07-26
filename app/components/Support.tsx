@@ -1,11 +1,9 @@
 /**
  * Created by halversondm on 2/22/17.
  */
-"use strict";
-
 import * as React from "react";
 
-class Support extends React.Component<any, any> {
+export class Support extends React.Component<any, any> {
 
     render() {
         return (
@@ -28,5 +26,3 @@ class Support extends React.Component<any, any> {
         );
     }
 }
-
-export default Support;

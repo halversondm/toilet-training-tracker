@@ -1,25 +1,23 @@
 /**
  * Created by halversondm on 9/16/16.
  */
-"use strict";
-import * as React from "react";
-import * as ReactDataGrid from "react-data-grid";
-import {Toolbar, Data} from "react-data-grid/addons";
-import "react-data-grid/dist/react-data-grid.css";
-import {connect} from "react-redux";
-import {MonthView} from "react-date-picker";
 import * as moment from "moment";
 import * as objectAssign from "object-assign";
+import * as React from "react";
+import * as ReactDataGrid from "react-data-grid";
+import { Data, Toolbar } from "react-data-grid-addons";
+import { MonthView } from "react-date-picker";
+import { connect } from "react-redux";
 import { TrackerState } from "../reducers/index";
-
+import { ConnectedState, mapStateToProps } from "./ConnectedState";
 
 const columns = [
-    {key: "date", name: "Date and Time", sortable: true},
-    {key: "duration", name: "Duration on the Toilet", sortable: true, filterable: true},
-    {key: "typeOfActivity", name: "Type of Activity", sortable: true, filterable: true},
-    {key: "typeOfVoid", name: "Type of Void", sortable: true, filterable: true},
-    {key: "notes", name: "Notes"},
-    {key: "promptedVisit", name: "Was the Visit Prompted?", sortable: true, filterable: true}
+    { key: "date", name: "Date and Time", sortable: true },
+    { key: "duration", name: "Duration on the Toilet", sortable: true, filterable: true },
+    { key: "typeOfActivity", name: "Type of Activity", sortable: true, filterable: true },
+    { key: "typeOfVoid", name: "Type of Void", sortable: true, filterable: true },
+    { key: "notes", name: "Notes" },
+    { key: "promptedVisit", name: "Was the Visit Prompted?", sortable: true, filterable: true },
 ];
 
 const timeZone = new Date();
@@ -27,14 +25,10 @@ const beginOfDay = "T00:00:00.000-" + timeZone.getTimezoneOffset() / 60;
 const endOfDay = "T23:59:59.999-" + timeZone.getTimezoneOffset() / 60;
 const dateFormat = "MM/DD/YYYYTHH:mm:ss.SSSZ";
 
-interface OnlineReportProps {
-    profileId: string
-}
-
-class OnlineReport extends React.Component<OnlineReportProps, any> {
+class OnlineReport extends React.Component<any & ConnectedState & any, any> {
 
     state: any;
-    
+
     constructor(props) {
         super(props);
         const date = moment().format("MM/DD/YYYY");
@@ -47,7 +41,7 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
             rangeStart: date,
             rangeEnd: date,
             hiddenMonthView: true,
-            downloadMessage: ""
+            downloadMessage: "",
         };
         this.rows = this.rows.bind(this);
         this.handleGridSort = this.handleGridSort.bind(this);
@@ -66,25 +60,25 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
     }
 
     getData() {
-        var data = JSON.stringify({
-            profileId: this.props.profileId,
+        const data = JSON.stringify({
+            profileId: this.props.data.profileId,
             rangeStart: moment(this.state.rangeStart + beginOfDay, dateFormat),
-            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat)
+            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat),
         });
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open("POST", "/reportData");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
                 const response = JSON.parse(xhr.responseText);
-                var items = response.Items.map(item => {
+                const items = response.Items.map((item) => {
                     item.date = moment(item.date).format("YYYY-MM-DD HH:mm");
                     return item;
                 });
-                this.setState({rows: items});
+                this.setState({ rows: items });
             } else {
                 console.log("unsucc ", xhr.responseText);
-                this.setState({error: true});
+                this.setState({ error: true });
             }
         };
         xhr.onerror = () => {
@@ -106,47 +100,47 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
     }
 
     handleGridSort(sortColumn, sortDirection) {
-        var state = objectAssign({}, this.state, {sortColumn: sortColumn, sortDirection: sortDirection});
+        const state = objectAssign({}, this.state, { sortColumn, sortDirection });
         this.setState(state);
     }
 
     handleFilterChange(filter) {
         console.log(filter);
-        var newFilters = objectAssign({}, this.state.filters);
+        const newFilters = objectAssign({}, this.state.filters);
         if (filter.filterTerm) {
             newFilters[filter.column.key] = filter;
         } else {
             delete newFilters[filter.column.key];
         }
-        this.setState({filters: newFilters});
+        this.setState({ filters: newFilters });
     }
 
     onClearFilters() {
-        this.setState({filters: {}});
+        this.setState({ filters: {} });
     }
 
     onActiveDateChange(dateString) {
-        this.setState({activeDate: dateString});
+        this.setState({ activeDate: dateString });
     }
 
     onRangeChange(dateArray) {
         if (dateArray.length === 0) {
             this.setState({
                 rangeStart: this.state.activeDate,
-                rangeEnd: this.state.activeDate
+                rangeEnd: this.state.activeDate,
             });
         } else {
             this.setState({
                 rangeStart: dateArray[0],
-                rangeEnd: dateArray[1]
+                rangeEnd: dateArray[1],
             });
         }
     }
 
     onDateChangeClick(event) {
         event.preventDefault();
-        var hiddenMonthView = !this.state.hiddenMonthView;
-        this.setState({hiddenMonthView: hiddenMonthView});
+        const hiddenMonthView = !this.state.hiddenMonthView;
+        this.setState({ hiddenMonthView });
         if (hiddenMonthView) {
             this.getData();
         }
@@ -154,30 +148,30 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
 
     download(event) {
         event.preventDefault();
-        var data = JSON.stringify({
-            profileId: this.props.profileId,
+        const data = JSON.stringify({
+            profileId: this.props.data.profileId,
             rangeStart: moment(this.state.rangeStart + beginOfDay, dateFormat),
-            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat)
+            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat),
         });
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open("POST", "/excel");
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.responseType = "arraybuffer";
         xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 400) {
-                var filename = "";
-                var disposition = xhr.getResponseHeader("Content-Disposition");
+                let filename = "";
+                const disposition = xhr.getResponseHeader("Content-Disposition");
                 if (disposition && disposition.indexOf("attachment") !== -1) {
-                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                    var matches = filenameRegex.exec(disposition);
+                    const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    const matches = filenameRegex.exec(disposition);
                     if (matches !== null && matches[1]) {
                         filename = matches[1].replace(/['"]/g, "");
                     }
                 }
-                var type = xhr.getResponseHeader("Content-Type");
-                var blob = new Blob([xhr.response], {type: type});
-                var anchor = document.createElement("a");
-                var downloadUrl = window.URL.createObjectURL(blob);
+                const type = xhr.getResponseHeader("Content-Type");
+                const blob = new Blob([xhr.response], { type });
+                const anchor = document.createElement("a");
+                const downloadUrl = window.URL.createObjectURL(blob);
                 anchor.style.display = "none";
                 if (typeof anchor.download === "undefined") {
                     window.location.href = downloadUrl;
@@ -188,11 +182,11 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
                     anchor.click();
                     document.body.removeChild(anchor);
                 }
-                setTimeout(function () {
+                setTimeout(() => {
                     URL.revokeObjectURL(downloadUrl);
                 }, 100);
             } else if (xhr.status === 404) {
-                this.setState({downloadMessage: "No file available for date range."});
+                this.setState({ downloadMessage: "No file available for date range." });
             }
         };
         xhr.onerror = () => {
@@ -202,44 +196,43 @@ class OnlineReport extends React.Component<OnlineReportProps, any> {
     }
 
     render() {
-        var rangeStart = this.state.rangeStart;
-        var rangeEnd = this.state.rangeEnd;
+        const rangeStart = this.state.rangeStart;
+        const rangeEnd = this.state.rangeEnd;
         return (
             <div>
                 <div className="row">
                     <label className="col-sm-2">Date Range</label>
                     <button className="btn btn-primary col-sm-2"
-                            onClick={this.onDateChangeClick}>{rangeStart + " - " + rangeEnd}</button>
+                        onClick={this.onDateChangeClick}>{rangeStart + " - " + rangeEnd}</button>
                     <div className="col-sm-3">
-                        <MonthView hidden={this.state.hiddenMonthView}
-                                   locale="en"
-                                   weekNumbers={false}
-                                   weekStartDay={0}
-                                   footer={false}
-                                   dateFormat="MM/DD/YYYY"
-                                   defaultRange={[this.state.rangeStart, this.state.rangeEnd]}
-                                   onActiveDateChange={this.onActiveDateChange}
-                                   onRangeChange={this.onRangeChange}/>
+                        <div hidden={this.state.hiddenMonthView}>
+                            <MonthView
+                                locale="en"
+                                weekNumbers={false}
+                                weekStartDay={0}
+                                footer={false}
+                                dateFormat="MM/DD/YYYY"
+                                defaultRange={[this.state.rangeStart, this.state.rangeEnd]}
+                                onActiveDateChange={this.onActiveDateChange}
+                                onRangeChange={this.onRangeChange} />
+                        </div>
                     </div>
                     <div className="col-sm-5">
-                        <button className="btn btn-success" style={{float: "right"}} title="Download Excel" onClick={this.download}><i
-                            className="fa fa-file-excel-o"
-                            aria-hidden="true"/>
+                        <button className="btn btn-success" style={{ float: "right" }}
+                            title="Download Excel" onClick={this.download}>
+                            <i className="fa fa-file-excel-o"
+                                aria-hidden="true" />
                         </button>
                     </div>
                 </div>
                 <ReactDataGrid columns={columns} minHeight={500} rowGetter={this.rows}
-                               toolbar={<Toolbar enableFilter={true}/>}
-                               onAddFilter={this.handleFilterChange}
-                               onClearFilters={this.onClearFilters}
-                               rowsCount={this.getSize()} onGridSort={this.handleGridSort}/>
+                    toolbar={<Toolbar enableFilter={true} />}
+                    onAddFilter={this.handleFilterChange}
+                    onClearFilters={this.onClearFilters}
+                    rowsCount={this.getSize()} onGridSort={this.handleGridSort} />
             </div>
         );
     }
-}
-
-function mapStateToProps(state : TrackerState) {
-    return {profileId: state.profileId};
 }
 
 export default connect(mapStateToProps)(OnlineReport);

@@ -1,45 +1,44 @@
 /**
  * Created by Daniel on 8/3/2016.
  */
-"use strict";
 import * as objectAssign from "object-assign";
-import {ActionType, Action} from "../actions/actions";
+import {Action, ActionType} from "../actions/actions";
 
 export interface TrackerState {
-  loginForm: LoginForm,
-  authenticated: boolean,
-  config: Configure,
-  profileId: string
+  loginForm: LoginForm;
+  authenticated: boolean;
+  config: Configure;
+  profileId: string;
 }
 
 export interface LoginForm {
-  email: string,
-  key: string
+  email: string;
+  key: string;
 }
 
 export interface Configure {
-  intervalBetweenDryCheck: number,
-  intervalBetweenToiletVisit: number,
-  traineeDurationOnToilet: number,
-  rewardForVoiding: string
+  intervalBetweenDryCheck: number;
+  intervalBetweenToiletVisit: number;
+  traineeDurationOnToilet: number;
+  rewardForVoiding: string;
 }
 
-const initialState : TrackerState = {
+const initialState: TrackerState = {
   loginForm: {
     email: "",
-    key: ""
+    key: "",
   },
   authenticated: false,
   config: {
     intervalBetweenDryCheck: 0,
     intervalBetweenToiletVisit: 0,
     traineeDurationOnToilet: 0,
-    rewardForVoiding: ""
+    rewardForVoiding: "",
   },
-  profileId: "0"
+  profileId: "0",
 };
 
-const trackerState = (state = initialState, action : Action) : TrackerState => {
+export const trackerStore = (state = initialState, action: Action): TrackerState => {
   switch (action.type) {
     case ActionType.UPDATE_AUTH_FORM:
       return objectAssign({}, state, {loginForm: action.loginForm});
@@ -53,5 +52,3 @@ const trackerState = (state = initialState, action : Action) : TrackerState => {
       return state;
   }
 };
-
-export default trackerState;

@@ -26,54 +26,56 @@ let config = {
             filename: "index.html"
         }),
         new ExtractTextPlugin("[name]-[hash].min.css"),
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.NoErrorsPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
         }),
         new CopyWebpackPlugin([
-            {from: "app/images/", to: "images/"},
-            {from: "app/extras"},
-            {from: "app/runtime"}
-        ])
+            {from: "app/images/", to: "images/"}, {from: "app/runtime"}
+        ]),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: function (module) {
+                // this assumes your vendor imports exist in the node_modules directory
+                return module.context && module.context.indexOf('node_modules') !== -1;
+            }
+        }),
     ],
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
     module: {
-        loaders: [
-            {
-                test: /\.tsx?$/,
-                loader: "awesome-typescript-loader"
-            }, {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract("style", "css")
-            }, {
-                test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
-                loader: "file-loader?name=assets/[name].[ext]"
-            }, {
-                test: /\.(jpg|jpeg)$/,
-                loader: "file-loader?name=images/[name].[ext]"
-            }, {
-                test: /\.json?$/,
-                loader: "json-loader"
-            }],
-        preLoaders: [
-            {test: /\.js$/, loader: "source-map-loader"}
-        ]
+        rules: [{
+            test: /\.tsx?$/,
+            use: {loader:"awesome-typescript-loader"}
+        }, {
+            test: /\.css$/,
+            use: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader",
+                publicPath: "/"
+            })
+        }, {
+            test: /\.(ttf|eot|woff2|svg|png|woff|php)$/,
+            use: {loader: "file-loader?name=assets/[name].[ext]"}
+        }, {
+            test: /\.(jpg|jpeg)$/,
+            use: {loader: "file-loader?name=images/[name].[ext]"}
+        }]
     }
 };
 
 if (process.env.NODE_ENV === "development") {
     config.devtool = "source-map";
 } else {
-    config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-        compressor: {
-            warnings: false,
-            screw_ie8: true
-        }
-    }));
+    config.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: true
+            }
+        }));
 }
 
 module.exports = config;

@@ -19,12 +19,12 @@
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
-    "cross-env": "1.0.8",
-    "express": "4.13.3",
-    "body-parser": "1.15.2",
-    "morgan": "1.7.0",
+    "cross-env": "5.0.1",
+    "express": "4.15.3",
+    "body-parser": "1.17.2",
+    "morgan": "1.8.2",
     "aws-sdk": "2.4.13",
-    "uuid": "2.0.2",
+    "uuid": "3.1.0",
     "exceljs": "0.2.24"
   }
 }
