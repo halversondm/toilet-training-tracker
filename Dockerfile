@@ -12,7 +12,7 @@ WORKDIR /src
 ADD . /src
 
 # Expose port
-EXPOSE  3001
+EXPOSE 3001
 
 # Run app using nodemon
 RUN cd /src && npm install

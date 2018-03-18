@@ -1,0 +1,9 @@
+language: node_js
+sudo: required
+services:
+  - docker
+node_js:
+  - "7"
+script:
+  - npm run build
+  - docker -t halversondm/toilet-training-tracker
