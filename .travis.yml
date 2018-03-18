@@ -6,4 +6,4 @@ node_js:
   - "7"
 script:
   - npm run build
-  - docker build -t halversondm/toilet-training-tracker
+  - docker build -t halversondm/toilet-training-tracker .
