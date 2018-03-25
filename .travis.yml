@@ -7,3 +7,5 @@ node_js:
 script:
   - npm run build
   - docker build -t halversondm/toilet-training-tracker .
+notifications:
+  slack: $SLACK_TOKEN
