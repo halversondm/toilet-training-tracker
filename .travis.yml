@@ -1,12 +1,20 @@
-language: node_js
 sudo: required
+language: node_js
 services:
 - docker
 node_js:
-- '7'
+- '8'
 script:
 - npm run build
-- docker build -t halversondm/toilet-training-tracker .
+after_success:
+- cd dist
+- docker --version  # document the version travis is using
+- pip install --user awscli # install aws cli w/o sudo
+- export PATH=$PATH:$HOME/.local/bin # put aws in the path
+- eval $(aws ecr get-login --no-include-email --region us-east-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
+- docker build -t toilettracker .
+- docker tag toilettracker:latest 442620099008.dkr.ecr.us-east-1.amazonaws.com/toilettracker:latest
+- docker push 442620099008.dkr.ecr.us-east-1.amazonaws.com/toilettracker:latest
 notifications:
   slack:
     secure: cH9hsl23+ghqE3Lp/ukPuDf5GB7EW6Rnj6iLcFJzQixNt0zQ5Xi4rsMDB32cPdvhJfLxxxSshMpOIiGeZxnBGFTBVu8ACfCkyJn4Pr2Xuw8lh1D29aasLzfF1qQ7Y8aVvZM4jinmQ7BSOZ0IFdrGI3WixFwY9/uy+khgJBw76kxbUmGkRjQ4zBOOHsBd/hhUA5lbV3LXfSa23bRrWcuvmldZ/E3Nh6IQGFBbGIOv+hr/vf9rq0iXQT1bIpjXIEutKoGSWr1Dji4Y7x1bJp0/mW2EVeuz2cWW7tj8TrMLllNiZS04fShGgEvXWNHs0cZeUJxq4uu4S+aX8IS76H89JoTLSTJ6+WxFLNLKNdMrttgXajcz7uuneyYTMn5RGrKqCmSZiIl+nynC27qupOEDWgX28R7ZY20oFDvkem1H3YFZ+WcM9sp0GvEztxr6ZcD0AKoNoqsvMuw83itM9Qweqy/R/Q8nF4KHeRCdXH/dm/Lbi29Y5d9ZQDBgoqq2H57sIFgrDWkPoCLl7WsWBcOimpSH0Vp8EmFdyaW5qErvToJ3QxARLvbe5nbAuZ/rPWWKAvu1IoxHVhWtgah6KPWg/PyRBxnazh/9//2jxLfxszJZsi1qf4ivdfQO3jab97r4n1dxlued5/huuGFmGR7Z4J51xSFpH29gO+32ZLdNUZs=

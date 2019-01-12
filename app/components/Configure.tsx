@@ -4,13 +4,13 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
 import { connect } from "react-redux";
-import { TrackerState } from "../reducers/index";
 import { ConnectedState, mapStateToProps } from "./ConnectedState";
+import Timeout = NodeJS.Timeout;
 
 class Configure extends React.Component<any & ConnectedState & any, any> {
 
     state: any;
-    intervalId: number;
+    intervalId: Timeout;
 
     constructor(props) {
         super(props);

@@ -1,23 +1,22 @@
 /**
  * Created by halversondm on 9/16/16.
  */
+import {DateRangeInput, IDateFormatProps} from "@blueprintjs/datetime";
 import * as moment from "moment";
 import * as objectAssign from "object-assign";
 import * as React from "react";
 import * as ReactDataGrid from "react-data-grid";
-import { Data, Toolbar } from "react-data-grid-addons";
-import { MonthView } from "react-date-picker";
-import { connect } from "react-redux";
-import { TrackerState } from "../reducers/index";
-import { ConnectedState, mapStateToProps } from "./ConnectedState";
+import {Data, Toolbar} from "react-data-grid-addons";
+import {connect} from "react-redux";
+import {ConnectedState, mapStateToProps} from "./ConnectedState";
 
 const columns = [
-    { key: "date", name: "Date and Time", sortable: true },
-    { key: "duration", name: "Duration on the Toilet", sortable: true, filterable: true },
-    { key: "typeOfActivity", name: "Type of Activity", sortable: true, filterable: true },
-    { key: "typeOfVoid", name: "Type of Void", sortable: true, filterable: true },
-    { key: "notes", name: "Notes" },
-    { key: "promptedVisit", name: "Was the Visit Prompted?", sortable: true, filterable: true },
+    {key: "date", name: "Date and Time", sortable: true},
+    {key: "duration", name: "Duration on the Toilet", sortable: true, filterable: true},
+    {key: "typeOfActivity", name: "Type of Activity", sortable: true, filterable: true},
+    {key: "typeOfVoid", name: "Type of Void", sortable: true, filterable: true},
+    {key: "notes", name: "Notes"},
+    {key: "promptedVisit", name: "Was the Visit Prompted?", sortable: true, filterable: true},
 ];
 
 const timeZone = new Date();
@@ -31,7 +30,7 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
 
     constructor(props) {
         super(props);
-        const date = moment().format("MM/DD/YYYY");
+        const date = new Date();
         this.state = {
             rows: [],
             filters: {},
@@ -50,20 +49,18 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
         this.getRows = this.getRows.bind(this);
         this.onRangeChange = this.onRangeChange.bind(this);
         this.onActiveDateChange = this.onActiveDateChange.bind(this);
-        this.onDateChangeClick = this.onDateChangeClick.bind(this);
         this.getData = this.getData.bind(this);
         this.download = this.download.bind(this);
+        this.getMomentFormatter = this.getMomentFormatter.bind(this);
     }
 
-    componentDidMount() {
-        this.getData();
-    }
-
-    getData() {
+    getData(event) {
+        const rangeStart = moment(this.state.rangeStart).format("MM/DD/YYYY") + beginOfDay;
+        const rangeEnd = moment(this.state.rangeEnd).format("MM/DD/YYYY") + endOfDay;
         const data = JSON.stringify({
             profileId: this.props.data.profileId,
-            rangeStart: moment(this.state.rangeStart + beginOfDay, dateFormat),
-            rangeEnd: moment(this.state.rangeEnd + endOfDay, dateFormat),
+            rangeStart: moment(rangeStart, dateFormat),
+            rangeEnd: moment(rangeEnd, dateFormat),
         });
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/reportData");
@@ -75,10 +72,10 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
                     item.date = moment(item.date).format("YYYY-MM-DD HH:mm");
                     return item;
                 });
-                this.setState({ rows: items });
+                this.setState({rows: items});
             } else {
                 console.log("unsucc ", xhr.responseText);
-                this.setState({ error: true });
+                this.setState({error: true});
             }
         };
         xhr.onerror = () => {
@@ -100,27 +97,26 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
     }
 
     handleGridSort(sortColumn, sortDirection) {
-        const state = objectAssign({}, this.state, { sortColumn, sortDirection });
+        const state = objectAssign({}, this.state, {sortColumn, sortDirection});
         this.setState(state);
     }
 
     handleFilterChange(filter) {
-        console.log(filter);
         const newFilters = objectAssign({}, this.state.filters);
         if (filter.filterTerm) {
             newFilters[filter.column.key] = filter;
         } else {
             delete newFilters[filter.column.key];
         }
-        this.setState({ filters: newFilters });
+        this.setState({filters: newFilters});
     }
 
     onClearFilters() {
-        this.setState({ filters: {} });
+        this.setState({filters: {}});
     }
 
-    onActiveDateChange(dateString) {
-        this.setState({ activeDate: dateString });
+    onActiveDateChange(dateString: string) {
+        this.setState({activeDate: dateString});
     }
 
     onRangeChange(dateArray) {
@@ -134,15 +130,6 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
                 rangeStart: dateArray[0],
                 rangeEnd: dateArray[1],
             });
-        }
-    }
-
-    onDateChangeClick(event) {
-        event.preventDefault();
-        const hiddenMonthView = !this.state.hiddenMonthView;
-        this.setState({ hiddenMonthView });
-        if (hiddenMonthView) {
-            this.getData();
         }
     }
 
@@ -169,7 +156,7 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
                     }
                 }
                 const type = xhr.getResponseHeader("Content-Type");
-                const blob = new Blob([xhr.response], { type });
+                const blob = new Blob([xhr.response], {type});
                 const anchor = document.createElement("a");
                 const downloadUrl = window.URL.createObjectURL(blob);
                 anchor.style.display = "none";
@@ -186,7 +173,7 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
                     URL.revokeObjectURL(downloadUrl);
                 }, 100);
             } else if (xhr.status === 404) {
-                this.setState({ downloadMessage: "No file available for date range." });
+                this.setState({downloadMessage: "No file available for date range."});
             }
         };
         xhr.onerror = () => {
@@ -195,41 +182,43 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
         xhr.send(data);
     }
 
+    getMomentFormatter(format: string): IDateFormatProps {
+        return {
+            formatDate: (date, locale) => moment(date).locale(locale).format(format),
+            parseDate: (str, locale) => moment(str, format).locale(locale).toDate(),
+            placeholder: format,
+        }
+    }
+
     render() {
-        const rangeStart = this.state.rangeStart;
-        const rangeEnd = this.state.rangeEnd;
         return (
             <div>
                 <div className="row">
                     <label className="col-sm-2">Date Range</label>
-                    <button className="btn btn-primary col-sm-2"
-                        onClick={this.onDateChangeClick}>{rangeStart + " - " + rangeEnd}</button>
-                    <div className="col-sm-3">
-                        <div hidden={this.state.hiddenMonthView}>
-                            <MonthView
-                                locale="en"
-                                weekNumbers={false}
-                                weekStartDay={0}
-                                footer={false}
-                                dateFormat="MM/DD/YYYY"
-                                defaultRange={[this.state.rangeStart, this.state.rangeEnd]}
-                                onActiveDateChange={this.onActiveDateChange}
-                                onRangeChange={this.onRangeChange} />
-                        </div>
+                    <div className="col-sm-4">
+                        <DateRangeInput {...this.getMomentFormatter("MM/DD/YYYY")} locale="en"
+                                        onChange={this.onRangeChange}
+                                        allowSingleDayRange={true}
+                                        value={[this.state.rangeStart, this.state.rangeEnd]}/>
+                    </div>
+                    <div className="col-sm-1">
+                        <button className="btn btn-primary btn-sm"
+                                onClick={this.getData}>Search
+                        </button>
                     </div>
                     <div className="col-sm-5">
-                        <button className="btn btn-success" style={{ float: "right" }}
-                            title="Download Excel" onClick={this.download}>
+                        <button className="btn btn-success btn-sm" style={{float: "right"}}
+                                title="Download Excel" onClick={this.download}>
                             <i className="fa fa-file-excel-o"
-                                aria-hidden="true" />
+                               aria-hidden="true"/>
                         </button>
                     </div>
                 </div>
                 <ReactDataGrid columns={columns} minHeight={500} rowGetter={this.rows}
-                    toolbar={<Toolbar enableFilter={true} />}
-                    onAddFilter={this.handleFilterChange}
-                    onClearFilters={this.onClearFilters}
-                    rowsCount={this.getSize()} onGridSort={this.handleGridSort} />
+                               toolbar={<Toolbar enableFilter={true}/>}
+                               onAddFilter={this.handleFilterChange}
+                               onClearFilters={this.onClearFilters}
+                               rowsCount={this.getSize()} onGridSort={this.handleGridSort}/>
             </div>
         );
     }

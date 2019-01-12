@@ -1,8 +1,6 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-
-// tslint:disable-next-line
-const appStore = require("../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg");
+import appStore from "../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg";
 
 export class Home extends React.Component<any, any> {
 
