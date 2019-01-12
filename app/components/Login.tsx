@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { ActionCreators, temp } from "../actions";
-import { TrackerState } from "../reducers/index";
 import { ConnectedState, mapStateToProps} from "./ConnectedState";
 
 class Login extends React.Component<ConnectedState & ActionCreators, any> {

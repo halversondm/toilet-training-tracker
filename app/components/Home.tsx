@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import appStore from "../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg";
+//import appStore from "../images/Download_on_the_App_Store_Badge_US-UK_135x40.svg";
 
 export class Home extends React.Component<any, any> {
 
@@ -31,7 +31,7 @@ export class Home extends React.Component<any, any> {
                 <hr />
                 <div className="row">
                     <div className="col-sm-12">
-                        Please see our mobile app available on Google Play and Apple App Store below.
+                        Please see our mobile app available on Google Play below.
                     </div>
                 </div>
                 <div className="row">
@@ -42,12 +42,12 @@ export class Home extends React.Component<any, any> {
                                 style={{ width: "135px", height: "48px" }} />
                         </a>
                     </div>
-                    <div className="col-sm-2">
-                        <a href="https://appsto.re/us/d7QVeb.i">
-                            <img alt="Get in on the App Store" style={{ paddingTop: "8px" }}
-                                src={appStore} />
-                        </a>
-                    </div>
+                    {/*<div className="col-sm-2">*/}
+                        {/*<a href="https://appsto.re/us/d7QVeb.i">*/}
+                            {/*<img alt="Get in on the App Store" style={{ paddingTop: "8px" }}*/}
+                                {/*src={appStore} />*/}
+                        {/*</a>*/}
+                    {/*</div>*/}
                 </div>
             </div>
         );

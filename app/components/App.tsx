@@ -20,7 +20,6 @@ class App extends React.Component<ConnectedState & any & any, any> {
 
     render() {
         const { authenticated } = this.props.data;
-        console.log("Am I authenticated?", authenticated);
         return (
             <BrowserRouter>
                 <div className="theme-showcase container">
@@ -56,7 +55,7 @@ class App extends React.Component<ConnectedState & any & any, any> {
                         <PrivateRoute path="/report" isAuthenticated={authenticated} component={OnlineReport} />
                         <hr />
                         <footer>
-                            <p>&copy; 2017 halversondm.com - <Link to="/privacy">Privacy Policy</Link> - <Link
+                            <p>&copy; 2019 halversondm.com - <Link to="/privacy">Privacy Policy</Link> - <Link
                                 to="/support">Support</Link></p>
                         </footer>
                     </div>

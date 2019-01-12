@@ -187,7 +187,7 @@ class OnlineReport extends React.Component<any & ConnectedState & any, any> {
             formatDate: (date, locale) => moment(date).locale(locale).format(format),
             parseDate: (str, locale) => moment(str, format).locale(locale).toDate(),
             placeholder: format,
-        }
+        };
     }
 
     render() {

@@ -2,13 +2,22 @@
  * Created by Daniel on 7/26/2016.
  */
 import {DateInput, IDateFormatProps} from "@blueprintjs/datetime";
+import * as moment from "moment";
 import * as objectAssign from "object-assign";
 import * as React from "react";
 import {connect} from "react-redux";
 import {ConnectedState, mapStateToProps} from "./ConnectedState";
-import moment = require("moment");
 
-class Track extends React.Component<any & ConnectedState & any, any> {
+export interface TrackState {
+    date: Date;
+    typeOfActivity: string;
+    duration: number;
+    typeOfVoid: string;
+    promptedVisit: string;
+    notes: string;
+}
+
+class Track extends React.Component<any & ConnectedState & any, TrackState> {
 
     constructor(props) {
         super(props);
@@ -37,9 +46,9 @@ class Track extends React.Component<any & ConnectedState & any, any> {
 
     save(event) {
         event.preventDefault();
-        const currentState = this.state;
-        const dataToSend = objectAssign({}, currentState, {profileId: this.props.data.profileId});
-        const data = JSON.stringify(dataToSend);
+        const currentState: any = objectAssign({}, this.state, {profileId: this.props.data.profileId});
+        currentState.date = moment.utc(currentState.date);
+        const data = JSON.stringify(currentState);
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/saveTrack");
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -85,7 +94,7 @@ class Track extends React.Component<any & ConnectedState & any, any> {
             formatDate: (date, locale) => moment(date).locale(locale).format(format),
             parseDate: (str, locale) => moment(str, format).locale(locale).toDate(),
             placeholder: format,
-        }
+        };
     }
 
     render() {
@@ -98,7 +107,7 @@ class Track extends React.Component<any & ConnectedState & any, any> {
                         <div className="col-sm-10">
                             <DateInput {...this.getMomentFormatter("MM/DD/YYYY hh:mm a")}
                                        locale="en" onChange={this.onDateChange} value={this.state.date}
-                                       timePrecision="minute" timePickerProps={{"useAmPm": true}}/>
+                                       timePrecision="minute" timePickerProps={{useAmPm: true}}/>
                         </div>
                     </div>
                     <div className="form-group">
